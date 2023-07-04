@@ -9,3 +9,7 @@ all :
 	@cp syscalls.h /usr/src/kernel-$(KERNEL_VER)/linux-$(KERNEL_VER)/include/linux/syscalls.h
 	@echo "compiling kernel"
 	@make -C /usr/src/kernel-$(KERNEL_VER)/linux-$(KERNEL_VER)/
+
+test :
+	@echo "making tests"
+	@make -C tests
