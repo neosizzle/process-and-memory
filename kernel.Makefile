@@ -630,7 +630,7 @@ export RCS_TAR_IGNORE := --exclude SCCS --exclude BitKeeper --exclude .svn \
 # Basic helpers built in scripts/basic/
 PHONY += scripts_basic
 scripts_basic:
-        $(Q)$(MAKE) $(build)=scripts/basic
+	$(Q)$(MAKE) $(build)=scripts/basic
 
 PHONY += outputmakefile
 ifdef building_out_of_srctree
