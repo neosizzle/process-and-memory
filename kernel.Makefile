@@ -1256,14 +1256,14 @@ filechk_kernel.release = \
 
 # Store (new) KERNELRELEASE string in include/config/kernel.release
 include/config/kernel.release: FORCE
-        $(call filechk,kernel.release)
+	$(call filechk,kernel.release)
 
 # Additional helpers built in scripts/
 # Carefully list dependencies so we do not try to build scripts twice
 # in parallel
 PHONY += scripts
 scripts: scripts_basic scripts_dtc
-        $(Q)$(MAKE) $(build)=$(@)
+	$(Q)$(MAKE) $(build)=$(@)
 
 # Things we need to do before we recursively start building the kernel
 # or the modules are listed in "prepare".
@@ -1278,19 +1278,19 @@ archprepare: outputmakefile archheaders archscripts scripts include/config/kerne
         include/generated/compile.h include/generated/autoconf.h remove-stale-files
 
 prepare0: archprepare
-        $(Q)$(MAKE) $(build)=scripts/mod
-        $(Q)$(MAKE) $(build)=. prepare
+	$(Q)$(MAKE) $(build)=scripts/mod
+	$(Q)$(MAKE) $(build)=. prepare
 
 # All the preparing..
 prepare: prepare0
 ifdef CONFIG_RUST
-        $(Q)$(CONFIG_SHELL) $(srctree)/scripts/rust_is_available.sh -v
-        $(Q)$(MAKE) $(build)=rust
+	$(Q)$(CONFIG_SHELL) $(srctree)/scripts/rust_is_available.sh -v
+	$(Q)$(MAKE) $(build)=rust
 endif
 
 PHONY += remove-stale-files
 remove-stale-files:
-        $(Q)$(srctree)/scripts/remove-stale-files
+	$(Q)$(srctree)/scripts/remove-stale-files
 
 # Support for using generic headers in asm-generic
 asm-generic := -f $(srctree)/scripts/Makefile.asm-generic obj
