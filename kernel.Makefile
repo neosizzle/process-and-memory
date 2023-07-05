@@ -1222,14 +1222,14 @@ quiet_cmd_ar_vmlinux.a = AR      $@
 
 targets += vmlinux.a
 vmlinux.a: $(KBUILD_VMLINUX_OBJS) scripts/head-object-list.txt autoksyms_recursive FORCE
-        $(call if_changed,ar_vmlinux.a)
+	$(call if_changed,ar_vmlinux.a)
 
 PHONY += vmlinux_o
 vmlinux_o: vmlinux.a $(KBUILD_VMLINUX_LIBS)
-        $(Q)$(MAKE) -f $(srctree)/scripts/Makefile.vmlinux_o
+	$(Q)$(MAKE) -f $(srctree)/scripts/Makefile.vmlinux_o
 
 vmlinux.o modules.builtin.modinfo modules.builtin: vmlinux_o
-        @:
+	@:
 
 PHONY += vmlinux
 # LDFLAGS_vmlinux in the top Makefile defines linker flags for the top vmlinux,
