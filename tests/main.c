@@ -7,11 +7,11 @@
 
 int main()
 {
-         long int amma = syscall(666);
-         printf("System call sys_hello returned %ld\n", amma);
-		 if (amma == -1)
-		 {
-			printf("errmsg %s \n", strerror(errno));
-		 }
-         return 0;
+	long int amma = syscall(666);
+	printf("System call sys_hello returned %ld\n", amma);
+	if (amma == -1)
+	{
+	printf("errmsg %s \n", strerror(errno));
+	}
+	return 0;
 }
