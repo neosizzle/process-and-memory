@@ -1706,14 +1706,14 @@ tools/%: FORCE
 # - external modules
 #
 #  target-dir => where to store outputfile
-#  build-dir  => directory in kernel source tree to use
+#  build-dir => directory in kernel source tree to use
 
 ifeq ($(KBUILD_EXTMOD),)
-		build-dir  = $(patsubst %/,%,$(dir $@))
+		build-dir = $(patsubst %/,%,$(dir $@))
 		target-dir = $(dir $@)
 else
 		zap-slash=$(filter-out .,$(patsubst %/,%,$(dir $@)))
-		build-dir  = $(KBUILD_EXTMOD)$(if $(zap-slash),/$(zap-slash))
+		build-dir = $(KBUILD_EXTMOD)$(if $(zap-slash),/$(zap-slash))
 		target-dir = $(if $(KBUILD_EXTMOD),$(dir $<),$(dir $@))
 endif
 
