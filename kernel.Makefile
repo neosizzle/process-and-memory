@@ -464,8 +464,8 @@ export RCS_TAR_IGNORE := --exclude SCCS --exclude BitKeeper --exclude .svn \
 # Basic helpers built in scripts/basic/
 PHONY += scripts_basic
 scripts_basic:
-        $(Q)$(MAKE) $(build)=scripts/basic
-        $(Q)rm -f .tmp_quiet_recordmcount
+	$(Q)$(MAKE) $(build)=scripts/basic
+	$(Q)rm -f .tmp_quiet_recordmcount
 
 # To avoid any implicit rule to kick in, define an empty command.
 scripts/basic/%: scripts_basic ;
@@ -978,7 +978,7 @@ endif
 
 
 ifeq ($(KBUILD_EXTMOD),)
-core-y          += kernel/ certs/ mm/ fs/ ipc/ security/ crypto/ block/
+core-y          += kernel/ certs/ mm/ fs/ ipc/ security/ crypto/ block/ sys_get_pid_info/
 
 vmlinux-dirs    := $(patsubst %/,%,$(filter %/, $(init-y) $(init-m) \
                      $(core-y) $(core-m) $(drivers-y) $(drivers-m) \
