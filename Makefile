@@ -16,8 +16,8 @@ all :
 	@cp syscall_64.tbl /usr/src/linux-$(KERNEL_VER)/arch/x86/entry/syscalls/syscall_64.tbl
 	@echo "📇  Copying syscalls.h.."
 	@cp syscalls.h /usr/src/linux-$(KERNEL_VER)/include/linux/syscalls.h
-	@echo "📇  Copying Makefile .."
-	@cp kernel.Makefile /usr/src/linux-$(KERNEL_VER)/Makefile
+	# @echo "📇  Copying Makefile .."
+	# @cp kernel.Makefile /usr/src/linux-$(KERNEL_VER)/Makefile
 	@echo "📇  Compiling /usr/src/linux-$(KERNEL_VER)/.."
 	@make -C /usr/src/linux-$(KERNEL_VER)/
 	@echo "📇  Replacing kernel and reinstalling bootloader.."
