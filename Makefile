@@ -21,7 +21,7 @@ all :
 	@echo "📇  Compiling /usr/src/kernel-$(KERNEL_VER)/linux-$(KERNEL_VER)/.."
 	@make -C /usr/src/kernel-$(KERNEL_VER)/linux-$(KERNEL_VER)/
 	@echo "📇  Replacing kernel and reinstalling bootloader.."
-	@cp /paht/to/bzimage /boot/vmlinuz-6.1.11-jng
+	@cp /usr/src/kernel-$(KERNEL_VER)/linux-$(KERNEL_VER)/arch/x86/boot/bzImage /boot/vmlinuz-6.1.11-jng
 	@grub-install /dev/sda
 
 test :
