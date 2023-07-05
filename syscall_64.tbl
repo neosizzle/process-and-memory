@@ -385,4 +385,4 @@
 546     x32     preadv2                 __x32_compat_sys_preadv64v2
 547     x32     pwritev2                __x32_compat_sys_pwritev64v2
 
-666     common     get_pid_info                sys_get_pid_info
+420     common     get_pid_info                sys_get_pid_info

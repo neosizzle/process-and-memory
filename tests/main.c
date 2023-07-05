@@ -7,7 +7,7 @@
 
 int main()
 {
-	long int amma = syscall(666);
+	long int amma = syscall(420);
 	printf("System call sys_hello returned %ld\n", amma);
 	if (amma == -1)
 	{
