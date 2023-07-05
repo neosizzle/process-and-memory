@@ -315,12 +315,6 @@ asmlinkage long sys_lremovexattr(const char __user *path,
                                  const char __user *name);
 asmlinkage long sys_fremovexattr(int fd, const char __user *name);
 
-
-/**
- * sys_get_pid_info
-*/
-asmlinkage long sys_get_pid_info(void);
-
 /* fs/dcache.c */
 asmlinkage long sys_getcwd(char __user *buf, unsigned long size);
 
@@ -1273,5 +1267,10 @@ static inline long ksys_truncate(const char __user *pathname, loff_t length)
 {
         return do_sys_truncate(pathname, length);
 }
+
+/**
+ * sys_get_pid_info
+*/
+asmlinkage long sys_get_pid_info(void);
 
 #endif
