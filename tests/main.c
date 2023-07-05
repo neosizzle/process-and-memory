@@ -8,7 +8,7 @@
 int main()
 {
 	long int amma = syscall(333);
-	printf("System call sys_hello returned %ld\n", amma);
+	printf("System call test0 returned %ld\n", amma);
 	if (amma == -1)
 	{
 	printf("errmsg %s \n", strerror(errno));
