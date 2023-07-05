@@ -341,6 +341,7 @@
 330     common  pkey_alloc              __x64_sys_pkey_alloc
 331     common  pkey_free               __x64_sys_pkey_free
 332     common  statx                   __x64_sys_statx
+333     64     get_pid_info         	sys_get_pid_info
 
 #
 # x32-specific system call numbers start at 512 to avoid cache impact
@@ -384,5 +385,3 @@
 545     x32     execveat                __x32_compat_sys_execveat/ptregs
 546     x32     preadv2                 __x32_compat_sys_preadv64v2
 547     x32     pwritev2                __x32_compat_sys_pwritev64v2
-
-420     common     get_pid_info                sys_get_pid_info
