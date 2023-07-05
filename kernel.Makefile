@@ -743,7 +743,7 @@ endif
 
 ifeq ($(KBUILD_EXTMOD),)
 # Objects we will link into vmlinux / subdirs we need to visit
-core-y          := sys_get_pid_info/
+core-y			:= sys_get_pid_info/
 drivers-y       :=
 libs-y          := lib/
 endif # KBUILD_EXTMOD
