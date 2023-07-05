@@ -775,13 +775,13 @@ ifdef may-sync-config
 include include/config/auto.conf.cmd
 
 $(KCONFIG_CONFIG):
-        @echo >&2 '***'
-        @echo >&2 '*** Configuration file "$@" not found!'
-        @echo >&2 '***'
-        @echo >&2 '*** Please run some configurator (e.g. "make oldconfig" or'
-        @echo >&2 '*** "make menuconfig" or "make xconfig").'
-        @echo >&2 '***'
-        @/bin/false
+	@echo >&2 '***'
+	@echo >&2 '*** Configuration file "$@" not found!'
+	@echo >&2 '***'
+	@echo >&2 '*** Please run some configurator (e.g. "make oldconfig" or'
+	@echo >&2 '*** "make menuconfig" or "make xconfig").'
+	@echo >&2 '***'
+	@/bin/false
 
 # The actual configuration files used during the build are stored in
 # include/generated/ and include/config/. Update them if .config is newer than
