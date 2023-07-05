@@ -1211,7 +1211,7 @@ quiet_cmd_autoksyms_h = GEN     $@
                         $(CONFIG_SHELL) $(srctree)/scripts/gen_autoksyms.sh $@
 
 $(autoksyms_h):
-        $(call cmd,autoksyms_h)
+	$(call cmd,autoksyms_h)
 
 # '$(AR) mPi' needs 'T' to workaround the bug of llvm-ar <= 14
 quiet_cmd_ar_vmlinux.a = AR      $@
