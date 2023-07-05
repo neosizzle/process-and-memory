@@ -1,4 +1,4 @@
-KERNEL_VER = $(shell uname -r)
+KERNEL_VER = $(4.17)
 
 # Style constants
 RED=\033[0;31m
