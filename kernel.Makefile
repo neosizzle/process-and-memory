@@ -1041,7 +1041,7 @@ endif
 ifdef CONFIG_GDB_SCRIPTS
         $(Q)ln -fsn $(abspath $(srctree)/scripts/gdb/vmlinux-gdb.py)
 endif
-        +$(call if_changed,link-vmlinux)
+		+$(call if_changed,link-vmlinux)
 
 # Build samples along the rest of the kernel
 ifdef CONFIG_SAMPLES
