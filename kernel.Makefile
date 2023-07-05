@@ -1024,8 +1024,8 @@ endif
 autoksyms_h := $(if $(CONFIG_TRIM_UNUSED_KSYMS), include/generated/autoksyms.h)
 
 $(autoksyms_h):
-        $(Q)mkdir -p $(dir $@)
-        $(Q)touch $@
+		$(Q)mkdir -p $(dir $@)
+		$(Q)touch $@
 
 ARCH_POSTLINK := $(wildcard $(srctree)/arch/$(SRCARCH)/Makefile.postlink)
 
