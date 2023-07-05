@@ -340,7 +340,7 @@
 329     common  pkey_mprotect           __x64_sys_pkey_mprotect
 330     common  pkey_alloc              __x64_sys_pkey_alloc
 331     common  pkey_free               __x64_sys_pkey_free
-332     common  statx                   __x64_sys_statx
+# 332     common  statx                   __x64_sys_statx
 333     common  get_pid_info         	sys_get_pid_info
 
 #
