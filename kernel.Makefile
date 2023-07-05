@@ -1297,11 +1297,11 @@ asm-generic := -f $(srctree)/scripts/Makefile.asm-generic obj
 
 PHONY += asm-generic uapi-asm-generic
 asm-generic: uapi-asm-generic
-        $(Q)$(MAKE) $(asm-generic)=arch/$(SRCARCH)/include/generated/asm \
-        generic=include/asm-generic
+	$(Q)$(MAKE) $(asm-generic)=arch/$(SRCARCH)/include/generated/asm \
+	generic=include/asm-generic
 uapi-asm-generic:
-        $(Q)$(MAKE) $(asm-generic)=arch/$(SRCARCH)/include/generated/uapi/asm \
-        generic=include/uapi/asm-generic
+	$(Q)$(MAKE) $(asm-generic)=arch/$(SRCARCH)/include/generated/uapi/asm \
+	generic=include/uapi/asm-generic
 
 # Generate some files
 # ---------------------------------------------------------------------------
@@ -1311,46 +1311,46 @@ uapi-asm-generic:
 
 uts_len := 64
 define filechk_utsrelease.h
-        if [ `echo -n "$(KERNELRELEASE)" | wc -c ` -gt $(uts_len) ]; then \
-          echo '"$(KERNELRELEASE)" exceeds $(uts_len) characters' >&2;    \
-          exit 1;                                                         \
-        fi;                                                               \
-        echo \#define UTS_RELEASE \"$(KERNELRELEASE)\"
+	if [ `echo -n "$(KERNELRELEASE)" | wc -c ` -gt $(uts_len) ]; then \
+		echo '"$(KERNELRELEASE)" exceeds $(uts_len) characters' >&2;    \
+		exit 1;                                                         \
+	fi;                                                               \
+	echo \#define UTS_RELEASE \"$(KERNELRELEASE)\"
 endef
 
 define filechk_version.h
-        if [ $(SUBLEVEL) -gt 255 ]; then                                 \
-                echo \#define LINUX_VERSION_CODE $(shell                 \
-                expr $(VERSION) \* 65536 + $(PATCHLEVEL) \* 256 + 255); \
-        else                                                             \
-                echo \#define LINUX_VERSION_CODE $(shell                 \
-                expr $(VERSION) \* 65536 + $(PATCHLEVEL) \* 256 + $(SUBLEVEL)); \
-        fi;                                                              \
-        echo '#define KERNEL_VERSION(a,b,c) (((a) << 16) + ((b) << 8) +  \
-        ((c) > 255 ? 255 : (c)))';                                       \
-        echo \#define LINUX_VERSION_MAJOR $(VERSION);                    \
-        echo \#define LINUX_VERSION_PATCHLEVEL $(PATCHLEVEL);            \
-        echo \#define LINUX_VERSION_SUBLEVEL $(SUBLEVEL)
+	if [ $(SUBLEVEL) -gt 255 ]; then                                 \
+			echo \#define LINUX_VERSION_CODE $(shell                 \
+			expr $(VERSION) \* 65536 + $(PATCHLEVEL) \* 256 + 255); \
+	else                                                             \
+			echo \#define LINUX_VERSION_CODE $(shell                 \
+			expr $(VERSION) \* 65536 + $(PATCHLEVEL) \* 256 + $(SUBLEVEL)); \
+	fi;                                                              \
+	echo '#define KERNEL_VERSION(a,b,c) (((a) << 16) + ((b) << 8) +  \
+	((c) > 255 ? 255 : (c)))';                                       \
+	echo \#define LINUX_VERSION_MAJOR $(VERSION);                    \
+	echo \#define LINUX_VERSION_PATCHLEVEL $(PATCHLEVEL);            \
+	echo \#define LINUX_VERSION_SUBLEVEL $(SUBLEVEL)
 endef
 
 $(version_h): PATCHLEVEL := $(or $(PATCHLEVEL), 0)
 $(version_h): SUBLEVEL := $(or $(SUBLEVEL), 0)
 $(version_h): FORCE
-        $(call filechk,version.h)
+	$(call filechk,version.h)
 
 include/generated/utsrelease.h: include/config/kernel.release FORCE
-        $(call filechk,utsrelease.h)
+	$(call filechk,utsrelease.h)
 
 filechk_compile.h = $(srctree)/scripts/mkcompile_h \
-        "$(UTS_MACHINE)" "$(CONFIG_CC_VERSION_TEXT)" "$(LD)"
+	"$(UTS_MACHINE)" "$(CONFIG_CC_VERSION_TEXT)" "$(LD)"
 
 include/generated/compile.h: FORCE
-        $(call filechk,compile.h)
+	$(call filechk,compile.h)
 
 PHONY += headerdep
 headerdep:
-        $(Q)find $(srctree)/include/ -name '*.h' | xargs --max-args 1 \
-        $(srctree)/scripts/headerdep.pl -I$(srctree)/include
+	$(Q)find $(srctree)/include/ -name '*.h' | xargs --max-args 1 \
+	$(srctree)/scripts/headerdep.pl -I$(srctree)/include
 
 # ---------------------------------------------------------------------------
 # Kernel headers
