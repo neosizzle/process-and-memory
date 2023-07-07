@@ -1271,6 +1271,18 @@ static inline long ksys_truncate(const char __user *pathname, loff_t length)
 /**
  * sys_get_pid_info
 */
-asmlinkage long sys_get_pid_info(void);
+struct pid_info
+{
+	long     pid;
+	int     state;
+	void*   process_stack;
+	long    age;
+	long*   children;
+	long	parent_pid;
+	char*	root;
+	char*	pwd;
+};
+
+asmlinkage long sys_get_pid_info(struct pid_info *ret, int pid);
 
 #endif
