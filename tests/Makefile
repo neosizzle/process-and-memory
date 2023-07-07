@@ -4,7 +4,7 @@ BUILDDIR=build/
 C_FLAGS = -I${INCS}
 
 NAME_0 = test0
-SRCS_0 = main.c main-test.c
+SRCS_0 = test_pid_info.c main-test.c
 OBJS_0 = ${SRCS_0:.c=.o}
 
 NAME_1 = test1

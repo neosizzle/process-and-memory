@@ -35,6 +35,12 @@ int main()
 	printf("PID entered is %ld\n", pid);
 
 	// read from /proc/pid stat
+	char *path = (char *)malloc(69420);
+	sprintf(path, "/proc/%ld/stat", pid);
+
+	// read from stat
+	// int fd = open(path, O_RDONLY);
+	// if (read(fd, )) 
 
 	// long int amma = syscall(333);
 	// printf("System call test0 returned %ld\n", amma);
@@ -42,5 +48,6 @@ int main()
 	// {
 	// printf("errmsg %s \n", strerror(errno));
 	// }
+	free(path);
 	return 0;
 }
