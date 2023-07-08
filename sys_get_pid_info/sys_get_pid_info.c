@@ -3,7 +3,7 @@
 #include <linux/sched.h>
 #include <linux/ktime.h>
 #include <linux/uaccess.h>
-
+#include <linux/list.h>
 #define  _SC_CLK_TCK  100
 
 struct pid_info
@@ -35,19 +35,19 @@ static struct pid_info create_pid_info(int pid)
 	struct list_head og_child = task->children;
 
 	// add first child
-	struct list_head head = list_entry(og_child, struct task_struct, children);
-	// struct task_struct child_task = list_entry(og_child, struct task_struct, children);
-	// if (child_task)
-	// 	printk("first child %d\n", child_task->pid);
+	// struct list_head head = list_entry(og_child, struct task_struct, children);
+	struct task_struct child_task = list_entry(og_child, struct task_struct, children);
+	if (child_task)
+		printk("first child %d\n", child_task->pid);
 
-	// struct list_head curr_child = og_child.next;
-	// while (&(curr_child) != &(og_child))
-	// {
-	// 	// add subsequent children...
-	// 	child_task = list_entry(curr_child, struct task_struct, children);
-	// 	printk("next child %d\n", child_task.pid);
-	// 	curr_child = *(curr_child.next);
-	// }
+	struct list_head curr_child = og_child.next;
+	while (&(curr_child) != &(og_child))
+	{
+		// add subsequent children...
+		child_task = list_entry(curr_child, struct task_struct, children);
+		printk("next child %d\n", child_task.pid);
+		curr_child = *(curr_child.next);
+	}
 	
 
 	res.parent_pid = task->real_parent->pid;
