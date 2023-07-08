@@ -34,21 +34,21 @@ static struct pid_info create_pid_info(int pid)
 	// add first child
 	struct task_struct *child_task = list_entry(og_child, struct task_struct, children);
 	if (child_task)
-		printk("first child %ld\n", child_task->pid);
+		printk("first child %d\n", child_task->pid);
 
-	struct list_head curr_child = og_child->next;
+	struct list_head curr_child = og_child.next;
 	while (&(curr_child) != &(og_child))
 	{
 		// add subsequent children...
 		child_task = list_entry(curr_child, struct task_struct, children);
-		printk("next child %ld\n", child_task->pid);
-		curr_child = curr_child->next;
+		printk("next child %d\n", child_task->pid);
+		curr_child = curr_child.next;
 	}
 	
 
-	res.parent_pid = task->real_parent.pid;
-	res.root = task->fs->root.mnt->mnt_root->d_name.name;
-	res.pwd = task->fs->pwd.mnt->mnt_root->d_name.name;
+	res.parent_pid = task->real_parent->pid;
+	res.root = task->fs.root.mnt->mnt_root->d_name.name;
+	res.pwd = task->fs.pwd.mnt->mnt_root->d_name.name;
 
 	return res;
 }
