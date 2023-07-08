@@ -49,8 +49,8 @@ static struct pid_info create_pid_info(int pid)
 	if (child_task == 0)
 		return res;
 
-	printk("first child %d\n", child_task->pid);
 	struct list_head curr_child = *(og_child.next);
+	printk("curr %p, og %p\n\n", &(curr_child), &(og_child));
 	// while (&(curr_child) != &(og_child))
 	// {
 	// 	// add subsequent children...
