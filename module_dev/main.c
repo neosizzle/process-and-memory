@@ -7,9 +7,6 @@
 #include <linux/fs_struct.h>
 #include <linux/dcache.h>
 
-MODULE_AUTHOR("jng");
-MODULE_LICENSE("GPL");
-
 struct pid_info
 {
 	long     pid;
