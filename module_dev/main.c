@@ -26,8 +26,8 @@ struct pid_info
 static struct pid_info create_pid_info(int pid)
 {
 	struct pid_info res;
-	// struct task_struct *task = pid_task(find_get_pid(pid), PIDTYPE_PID);
-	struct task_struct *task = current;
+	struct task_struct *task = pid_task(find_get_pid(pid), PIDTYPE_PID);
+	// struct task_struct *task = current;
 
 	res.pid = task->pid;
 	res.state = task->state;
