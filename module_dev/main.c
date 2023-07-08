@@ -6,6 +6,8 @@
 #include <linux/fs_struct.h>
 #include <linux/dcache.h>
 #include <linux/sched.h>
+#include <linux/pid.h>
+#include <linux/timekeeping.h>
 
 struct pid_info
 {
