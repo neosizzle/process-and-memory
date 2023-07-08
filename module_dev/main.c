@@ -63,7 +63,7 @@ static struct pid_info create_pid_info(int pid)
 */
 int init_module(void)
 {
-	struct pid_info res = create_pid_info(current->pid);
+	// struct pid_info res = create_pid_info(current->pid);
 	return 0;
 }
 
