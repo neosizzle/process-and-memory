@@ -32,7 +32,7 @@ static struct pid_info create_pid_info(int pid)
 	res.state = task->state;
 	res.process_stack = task->stack;
 	// age...
-	// s64  uptime;
+	s64  uptime;
     uptime = ktime_divns((ktime_get_boottime() * 1000), NSEC_PER_SEC);
 	// res.age = uptime - (task->start_time - 100);
 	res.age = 69;
