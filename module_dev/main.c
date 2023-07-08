@@ -49,7 +49,6 @@ static struct pid_info create_pid_info(int pid)
 		return res;
 
 	struct list_head *curr_child = og_child->next;
-	printk("first child %d\n\n", child_task->pid);
 	while (curr_child != og_child)
 	{
 		// add subsequent children...
@@ -66,8 +65,8 @@ static struct pid_info create_pid_info(int pid)
 */
 int init_module(void)
 {
-	printk("currpid %d\n\n", current->pid);
-	struct pid_info res = create_pid_info(current->pid);
+	printk("currpid %d\n\n", 1);
+	struct pid_info res = create_pid_info(1);
 	return 0;
 }
 
