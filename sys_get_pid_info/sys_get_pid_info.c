@@ -51,16 +51,16 @@ static struct pid_info create_pid_info(int pid)
 	
 
 	res.parent_pid = task->real_parent->pid;
-	res.root = task->fs.root.mnt->mnt_root->d_name.name;
-	res.pwd = task->fs.pwd.mnt->mnt_root->d_name.name;
+	res.root = task->fs->root.mnt->mnt_root->d_name.name;
+	res.pwd = task->fs->pwd.mnt->mnt_root->d_name.name;
 
 	return res;
 }
 
 asmlinkage long sys_get_pid_info(struct pid_info *ret, int pid)
 {
-	struct pid_info = create_pid_info(pid);
-	if (copy_to_user(ret, pid_info, sizeof(pid_info)) != 0) {
+	struct pid_info res = create_pid_info(pid);
+	if (copy_to_user(ret, res, sizeof(pid_info)) != 0) {
 		return -1;
 	}
 	printk("hello world!!!!\n");
