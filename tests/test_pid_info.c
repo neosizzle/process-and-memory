@@ -161,7 +161,7 @@ int main(int argc)
 	printf("\n======USERSPACE======\n");
 	read_from_vfs(pid, iterate_parent_and_children);
 
-	long int amma = syscall(333);
+	long int amma = syscall(333, 1);
 	printf("System call test0 returned %ld\n", amma);
 	if (amma == -1)
 	{
