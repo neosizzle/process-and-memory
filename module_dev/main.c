@@ -24,15 +24,17 @@ struct pid_info
 static struct pid_info create_pid_info(int pid)
 {
 	struct pid_info res;
-	struct task_struct *task = pid_task(find_get_pid(pid), PIDTYPE_PID);
+	// struct task_struct *task = pid_task(find_get_pid(pid), PIDTYPE_PID);
+	struct task_struct *task = current;
 
 	res.pid = task->pid;
 	res.state = task->state;
 	res.process_stack = task->stack;
 	// age...
-	s64  uptime;
-    uptime = ktime_divns((ktime_get_boottime() * 1000), NSEC_PER_SEC);
-	res.age = uptime - (task->start_time - 100);
+	// s64  uptime;
+    // uptime = ktime_divns((ktime_get_boottime() * 1000), NSEC_PER_SEC);
+	// res.age = uptime - (task->start_time - 100);
+	res.age = 69;
 
 	// // children...
 	// struct list_head og_child = task->children;
