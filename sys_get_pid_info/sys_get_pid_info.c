@@ -2,6 +2,7 @@
 #include <linux/kernel.h>
 #include <linux/sched.h>
 #include <linux/ktime.h>
+#include <linux/uaccess.h>
 
 #define  _SC_CLK_TCK  100
 
@@ -34,18 +35,19 @@ static struct pid_info create_pid_info(int pid)
 	struct list_head og_child = task->children;
 
 	// add first child
-	struct task_struct child_task = list_entry(og_child, struct task_struct, children);
-	if (child_task)
-		printk("first child %d\n", child_task->pid);
+	struct list_head = list_entry(og_child, struct task_struct, children);
+	// struct task_struct child_task = list_entry(og_child, struct task_struct, children);
+	// if (child_task)
+	// 	printk("first child %d\n", child_task->pid);
 
-	struct list_head curr_child = og_child.next;
-	while (&(curr_child) != &(og_child))
-	{
-		// add subsequent children...
-		child_task = list_entry(curr_child, struct task_struct, children);
-		printk("next child %d\n", child_task.pid);
-		curr_child = *(curr_child.next);
-	}
+	// struct list_head curr_child = og_child.next;
+	// while (&(curr_child) != &(og_child))
+	// {
+	// 	// add subsequent children...
+	// 	child_task = list_entry(curr_child, struct task_struct, children);
+	// 	printk("next child %d\n", child_task.pid);
+	// 	curr_child = *(curr_child.next);
+	// }
 	
 
 	res.parent_pid = task->real_parent->pid;
@@ -57,7 +59,10 @@ static struct pid_info create_pid_info(int pid)
 
 asmlinkage long sys_get_pid_info(struct pid_info *ret, int pid)
 {
-
+	struct pid_info = create_pid_info(pid);
+	if (copy_to_user(ret, pid_info, sizeof(pid_info)) != 0) {
+		return -1;
+	}
 	printk("hello world!!!!\n");
 	return 0;
 }
