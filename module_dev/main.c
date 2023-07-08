@@ -50,7 +50,7 @@ static struct pid_info create_pid_info(int pid)
 
 	struct list_head *curr_child = og_child->next;
 	child_task = list_entry(curr_child, struct task_struct, children);
-	printk("next child addr %p, pid %d\n", child_task, child_task->pid);
+	printk("next child addr %p, pid %d\n", child_task, og_child->pid);
 	// while (curr_child != og_child)
 	// {
 	// 	// add subsequent children...
