@@ -6,6 +6,7 @@
 #include <string.h>
 #include <errno.h>
 #include <fcntl.h>
+#include <sys/wait.h>
 
 #include "libft.h"
 
@@ -44,7 +45,7 @@ void read_from_vfs(long pid)
 		free(path);
 		return ;
 	}
-	if (read(fd, stat_str, 69419) < 0);
+	if (read(fd, stat_str, 69419) < 0)
 		printf("read error diu %s\n", strerror(errno));
 
 	printf("stat is %s\n", stat_str);
@@ -94,7 +95,7 @@ void read_from_vfs(long pid)
 	}
 	else
 	{
-		wait();
+		wait(0);
 		char *buf = malloc(1234);
 		close(my_pipe[pipe_in]);
 		read(my_pipe[pipe_out], buf, 1233);

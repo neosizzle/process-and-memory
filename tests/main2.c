@@ -1,17 +1,40 @@
 #include <stdio.h>
-#include <linux/kernel.h>
-#include <sys/syscall.h>
+#include <stdlib.h>
 #include <unistd.h>
-#include <string.h>
-#include <errno.h>
+#include <sys/wait.h>
 
-int main()
-{
-	long int amma = syscall(332);
-	printf("System call  test1 returned %ld\n", amma);
-	if (amma == -1)
+/**
+ * 			A 		-> main process
+ * 		B		C	
+ * 	D
+*/
+int main(void) {
+	printf("a_pid: %d\n", getpid());
+	long b_pid = fork();
+
+	if (!b_pid)
 	{
-	printf("errmsg %s \n", strerror(errno));
+		long d_pid = fork();
+		if (!d_pid)
+			while (1) {}
+		else
+		{
+			printf("d_pid: %ld\n", d_pid);
+			wait(0);
+		}
+		while (1) {}
 	}
-	return 0;
+	else
+	{
+		printf("b_pid: %ld\n", b_pid);
+		long c_pid = fork();
+		if (!c_pid)
+			while (1) {}
+		else
+		{
+			printf("c_pid: %ld\n", c_pid);
+			wait(0);
+		}
+		wait(0);
+	}
 }

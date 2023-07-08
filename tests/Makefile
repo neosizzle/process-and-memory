@@ -4,7 +4,7 @@ BUILDDIR=build/
 C_FLAGS = -I${INCS}
 
 NAME_0 = test0
-SRCS_0 = test_pid_info.c main-test.c
+SRCS_0 = test_pid_info.c
 OBJS_0 = ${SRCS_0:.c=.o}
 
 NAME_1 = test1
@@ -24,7 +24,7 @@ CYAN=\033[0;36m
 NC=\033[0m # No Color
 
 
-all : ${NAME_0} ${NAME_1}
+all : ${NAME_1} ${NAME_0}
 	@echo "${GREEN}✔️  Done build..${NC}"
 
 # Linking
