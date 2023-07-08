@@ -49,13 +49,15 @@ static struct pid_info create_pid_info(int pid)
 		return res;
 
 	struct list_head *curr_child = og_child->next;
-	while (curr_child != og_child)
-	{
-		// add subsequent children...
-		child_task = list_entry(curr_child, struct task_struct, children);
-		printk("next child addr %p, pid %d\n", child_task, child_task->pid);
-		curr_child = curr_child->next;
-	}
+	child_task = list_entry(curr_child, struct task_struct, children);
+	printk("next child addr %p, pid %d\n", child_task, child_task->pid);
+	// while (curr_child != og_child)
+	// {
+	// 	// add subsequent children...
+	// 	child_task = list_entry(curr_child, struct task_struct, children);
+	// 	printk("next child addr %p, pid %d\n", child_task, child_task->pid);
+	// 	curr_child = curr_child->next;
+	// }
 
 	return res;
 }
