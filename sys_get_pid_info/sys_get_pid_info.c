@@ -34,23 +34,23 @@ static struct pid_info create_pid_info(int pid)
     uptime = ktime_divns((ktime_get_boottime() * 1000), NSEC_PER_SEC);
 	res.age = uptime - (task->start_time - _SC_CLK_TCK);
 
-	// children...
-	struct list_head og_child = task->children;
+	// // children...
+	// struct list_head og_child = task->children;
 
-	// add first child
-	// struct list_head head = list_entry(og_child, struct task_struct, children);
-	struct task_struct *child_task = list_entry(&og_child, struct task_struct, children);
-	if (child_task == 0)
-		printk("first child %d\n", child_task->pid);
+	// // add first child
+	// // struct list_head head = list_entry(og_child, struct task_struct, children);
+	// struct task_struct *child_task = list_entry(&og_child, struct task_struct, children);
+	// if (child_task == 0)
+	// 	printk("first child %d\n", child_task->pid);
 
-	struct list_head curr_child = *(og_child.next);
-	while (&(curr_child) != &(og_child))
-	{
-		// add subsequent children...
-		child_task = list_entry(&curr_child, struct task_struct, children);
-		printk("next child %d\n", child_task->pid);
-		curr_child = *(curr_child.next);
-	}
+	// struct list_head curr_child = *(og_child.next);
+	// while (&(curr_child) != &(og_child))
+	// {
+	// 	// add subsequent children...
+	// 	child_task = list_entry(&curr_child, struct task_struct, children);
+	// 	printk("next child %d\n", child_task->pid);
+	// 	curr_child = *(curr_child.next);
+	// }
 	
 
 	res.parent_pid = task->real_parent->pid;
