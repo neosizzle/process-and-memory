@@ -9,6 +9,8 @@
 #include <linux/pid.h>
 #include <linux/timekeeping.h>
 
+MODULE_LICENSE("GPL");
+
 struct pid_info
 {
 	long     pid;
