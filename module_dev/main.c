@@ -1,15 +1,13 @@
-#include <linux/linkage.h>
-#include <linux/kernel.h>
-#include <linux/sched.h>
-#include <linux/ktime.h>
-#include <linux/uaccess.h>
-#include <linux/list.h>
-#include <linux/fs_struct.h>
-#include <linux/dcache.h>
+/*  
+ * main.c - The entry point to the module.
+ */
+#include <linux/module.h>	/* Needed by all modules */
+#include <linux/kernel.h>	/* Needed for KERN_INFO */
+#include <linux/hid.h>
+#include <linux/irqnr.h>
 
 MODULE_AUTHOR("jng");
 MODULE_LICENSE("GPL");
-
 
 struct pid_info
 {
@@ -34,7 +32,7 @@ static struct pid_info create_pid_info(int pid)
 	// age...
 	s64  uptime;
     uptime = ktime_divns((ktime_get_boottime() * 1000), NSEC_PER_SEC);
-	res.age = uptime - (task->start_time - 100);
+	res.age = uptime - (task->start_time - _SC_CLK_TCK);
 
 	// // children...
 	// struct list_head og_child = task->children;
