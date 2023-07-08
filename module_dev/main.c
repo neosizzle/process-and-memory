@@ -6,10 +6,12 @@
 #include <linux/list.h>
 #include <linux/fs_struct.h>
 #include <linux/dcache.h>
-#define  _SC_CLK_TCK  100
 
 MODULE_AUTHOR("jng");
 MODULE_LICENSE("GPL");
+
+#define  _SC_CLK_TCK  100
+
 
 struct pid_info
 {
