@@ -3,6 +3,8 @@
 #include <linux/sched.h>
 #include <linux/ktime.h>
 
+#define  _SC_CLK_TCK  100
+
 struct pid_info
 {
 	long     pid;
@@ -25,8 +27,8 @@ static struct pid_info create_pid_info(int pid)
 	res.process_stack = task->stack;
 	// age...
 	s64  uptime;
-    uptime = ktime_divns(ktime_get_coarse_boottime(), NSEC_PER_SEC);
-	res.age = uptime - (task->start_time - sysconf(_SC_CLK_TCK))
+    uptime = ktime_divns((ktime_get_boottime() * 1000), NSEC_PER_SEC);
+	res.age = uptime - (task->start_time - _SC_CLK_TCK);
 
 	// children...
 	struct list_head og_child = task->children;
@@ -42,7 +44,7 @@ static struct pid_info create_pid_info(int pid)
 		// add subsequent children...
 		child_task = list_entry(curr_child, struct task_struct, children);
 		printk("next child %d\n", child_task->pid);
-		curr_child = curr_child.next;
+		curr_child = *(curr_child.next);
 	}
 	
 

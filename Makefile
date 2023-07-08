@@ -19,7 +19,7 @@ all :
 	@echo "📇  Copying Makefile .."
 	@cp kernel.Makefile /usr/src/linux-$(KERNEL_VER)/Makefile
 	@echo "📇  Compiling /usr/src/linux-$(KERNEL_VER)/.."
-	@make -C /usr/src/linux-$(KERNEL_VER)/
+	@make -j4 -C /usr/src/linux-$(KERNEL_VER)/
 	@echo "📇  Replacing kernel and reinstalling bootloader.."
 	@cp /usr/src/linux-$(KERNEL_VER)/arch/x86/boot/bzImage /boot/vmlinuz-4.17.0-jng
 	@grub-install /dev/sda
