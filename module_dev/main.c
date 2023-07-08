@@ -10,8 +10,6 @@
 MODULE_AUTHOR("jng");
 MODULE_LICENSE("GPL");
 
-#define  _SC_CLK_TCK  100
-
 
 struct pid_info
 {
@@ -36,7 +34,7 @@ static struct pid_info create_pid_info(int pid)
 	// age...
 	s64  uptime;
     uptime = ktime_divns((ktime_get_boottime() * 1000), NSEC_PER_SEC);
-	res.age = uptime - (task->start_time - _SC_CLK_TCK);
+	res.age = uptime - (task->start_time - 100);
 
 	// // children...
 	// struct list_head og_child = task->children;
