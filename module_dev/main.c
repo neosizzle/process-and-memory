@@ -50,7 +50,7 @@ static struct pid_info create_pid_info(int pid)
 		return res;
 
 	struct list_head curr_child = *(og_child.next);
-	printk("curr %p, og %p, next %p\n\n", curr_child.next, &og_child, og_child.next);
+	printk("curr %p, og %p, next %p\n\n", curr_child, &og_child, og_child.next);
 	// while (&(curr_child) != &(og_child))
 	// {
 	// 	// add subsequent children...
