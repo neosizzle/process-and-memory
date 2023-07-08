@@ -3,7 +3,7 @@
 #include <unistd.h>
 #include <sys/wait.h>
 
-/**
+/** pstree -p PID
  * 			A 		-> main process
  * 		B		C	
  * 	D

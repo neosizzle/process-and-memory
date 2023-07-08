@@ -7,6 +7,8 @@
 #include <errno.h>
 #include <fcntl.h>
 #include <sys/wait.h>
+#include <time.h>
+#include <sys/sysinfo.h>
 
 #include "libft.h"
 
@@ -15,7 +17,7 @@
 struct pid_info
 {
 	long     pid;
-	int     state;
+	long     state;
 	void*   process_stack;
 	long    age;
 	long*   children;
@@ -29,7 +31,21 @@ long sys_get_pid_info(struct pid_info *ret, int pid)
 	return syscall(333, ret, pid);
 }
 
-void read_from_vfs(long pid)
+long get_uptime() {
+    FILE* file = fopen("/proc/uptime", "r");
+    if (file == NULL) {
+        perror("fopen");
+        exit(1);
+    }
+    
+    double uptime;
+    fscanf(file, "%lf", &uptime);
+    fclose(file);
+    
+    return (long)uptime;
+}
+
+void read_from_vfs(long pid, int iterate_parent_and_children)
 {
 	// read from /proc/pid stat
 	char *path = (char *)malloc(69420);
@@ -48,7 +64,6 @@ void read_from_vfs(long pid)
 	if (read(fd, stat_str, 69419) < 0)
 		printf("read error diu %s\n", strerror(errno));
 
-	printf("stat is %s\n", stat_str);
 	char **stat = ft_split(stat_str, ' ');
 
 	// extract available info
@@ -58,18 +73,24 @@ void read_from_vfs(long pid)
 	char*	age_str = stat[21]; // should divide sysconf(_SC_CLK_TCK) and minus curr time
 	char*	stack_str = stat[27];
 	
-	printf("pid_str, %s\nstate_str, %s\nppid, %s\nage, %s\nstack, %s\n",
+	// age math
+	long age = ft_atoi(age_str);
+	// time_t currentTime;
+  	// time(&currentTime);
+	long time = get_uptime() - (age / sysconf(_SC_CLK_TCK)) ;
+
+	printf("pid_str, %s\nstate_str, %s\nppid, %s\nage, %ld\nstack, %s\n",
 	pid_str,
 	state_str,
 	ppid_str,
-	age_str,
+	time,
 	stack_str
 	);
 
 	// read from /proc/pid/root to get root pwd
 	sprintf(path, "/proc/%ld/root", pid);
-	char*	root_str = malloc(1234);
-	if (readlink(path, root_str, 1233) < 0)
+	char*	root_str = ft_calloc(1234, 1);
+	if (readlink(path, root_str, 123) < 0)
 		printf("rl error diu %s\n", strerror(errno));
 	printf("root, %s\n", root_str);
 
@@ -81,6 +102,7 @@ void read_from_vfs(long pid)
 	printf("cwd, %s\n", cwd_str);
 
 	// gonna do pgrep now 
+	char *children_str = ft_calloc(1234, 1);
 	int my_pipe[2];
 	int pipe_in = 1;
 	int pipe_out = 0;
@@ -96,10 +118,24 @@ void read_from_vfs(long pid)
 	else
 	{
 		wait(0);
-		char *buf = malloc(1234);
 		close(my_pipe[pipe_in]);
-		read(my_pipe[pipe_out], buf, 1233);
-		printf("children, \n%s\n", buf);
+		read(my_pipe[pipe_out], children_str, 1233);
+		close(my_pipe[pipe_out]);
+		printf("children, \n%s\n", children_str);
+		if (iterate_parent_and_children)
+		{
+			printf("\n========PARENT========\n");
+			read_from_vfs(ft_atoi(ppid_str), 0);
+
+			char **children_pids_str = ft_split(children_str, '\n');
+			int children_idx = -1;
+			while (children_pids_str[++children_idx])
+			{
+				printf("\n========CHILD========\n");
+				read_from_vfs(ft_atoi(children_pids_str[children_idx]), 0);
+			}
+			
+		}
 	}
 
 	free(stat);
@@ -107,16 +143,23 @@ void read_from_vfs(long pid)
 	free(path);
 }
 
-int main()
+int main(int argc)
 {
 	long pid;
+	int iterate_parent_and_children;
+
+	if (argc >= 2)
+		iterate_parent_and_children = 1;
+	else
+		iterate_parent_and_children = 0;
 
 	// read from input
 	printf("Type a pid: \n");
 	scanf("%ld", &pid);
 
 	printf("PID entered is %ld\n", pid);
-	read_from_vfs(pid);
+	printf("\n======USERSPACE======\n");
+	read_from_vfs(pid, iterate_parent_and_children);
 
 	// long int amma = syscall(333);
 	// printf("System call test0 returned %ld\n", amma);
