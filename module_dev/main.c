@@ -1,5 +1,6 @@
 #include <linux/linkage.h>
 #include <linux/kernel.h>
+#include <linux/module.h>
 #include <linux/ktime.h>
 #include <linux/uaccess.h>
 #include <linux/list.h>
