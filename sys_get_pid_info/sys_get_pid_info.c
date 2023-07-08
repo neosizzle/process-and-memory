@@ -51,7 +51,7 @@ static struct pid_info create_pid_info(int pid)
 	
 
 	res.parent_pid = task->real_parent->pid;
-	res.root = task->fs.root.dentry->d_name.name;
+	res.root = task->fs->root.dentry->d_name.name;
 	res.pwd = task->fs.pwd.dentry->d_name.name;
 
 	return res;
