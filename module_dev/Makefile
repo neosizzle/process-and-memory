@@ -1,5 +1,5 @@
 obj-m += main.o
-KDIR = /usr/src/$(shell uname -r)
+KDIR = /usr/src/linux-$(shell uname -r)
 
 all:
 	make -C $(KDIR) M=$(PWD) modules
