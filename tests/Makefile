@@ -30,13 +30,11 @@ all : ${NAME_0} ${NAME_1}
 # Linking
 ${NAME_0}: ${OBJS_TARGET_0}
 	@echo "${GREEN}😏  Linking  ${foreach obj,${OBJS_0},${BUILDDIR}${obj}}.. ${NC}"
-	@${CC} ${foreach obj,${OBJS_0},${BUILDDIR}${obj}} ${C_FLAGS} -o ${NAME_0}
-	@./${NAME_0}
+	@${CC} ${foreach obj,${OBJS_0},${BUILDDIR}${obj}} libft.a ${C_FLAGS} -o ${NAME_0} 
 
 ${NAME_1}: ${OBJS_TARGET_1}
 	@echo "${GREEN}😏  Linking ${foreach obj,${OBJS_1},${BUILDDIR}${obj}}.. ${NC}"
 	@${CC} ${foreach obj,${OBJS_1},${BUILDDIR}${obj}} ${C_FLAGS} -o ${NAME_1}
-	@./${NAME_1}
 
 
 
