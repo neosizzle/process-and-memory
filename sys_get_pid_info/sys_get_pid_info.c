@@ -5,6 +5,7 @@
 #include <linux/uaccess.h>
 #include <linux/list.h>
 #include <linux/fs_struct.h>
+#include <linux/dcache.h>
 
 #define  _SC_CLK_TCK  100
 
