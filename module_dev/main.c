@@ -31,7 +31,6 @@ static struct pid_info create_pid_info(int pid)
 	struct task_struct *child_task;
 	int children_length;
 	int i;
-	long *children;
 
 	res.pid = task->pid;
 	res.state = task->state;
@@ -51,6 +50,9 @@ static struct pid_info create_pid_info(int pid)
    		printk(KERN_INFO "Child PID: %d\n", child_task->pid);
 		++children_length;
 	}
+
+	long children[children_length + 1];
+
 	children = kmalloc(sizeof(children_length + 1), GFP_USER);
 	list_for_each_entry(child_task, &task->children, sibling) {
    		children[i++] = child_task->pid;
