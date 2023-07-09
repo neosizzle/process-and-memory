@@ -94,8 +94,8 @@ void read_from_vfs(long pid, int iterate_parent_and_children)
 
 	// read from /proc/pid/cwd to get cwd
 	sprintf(path, "/proc/%ld/cwd", pid);
-	char*	cwd_str = malloc(1234);
-	if (readlink(path, cwd_str, 1233) < 0)
+	char*	cwd_str = ft_calloc(1234, 1);
+	if (readlink(path, cwd_str, 1200) < 0)
 		printf("rl error diu %s\n", strerror(errno));
 	printf("cwd, %s\n", cwd_str);
 
@@ -164,9 +164,9 @@ int main(int argc)
 		printf("OOP MALLOC FAIL\n");
 	else
 	{
-	pidinfo->pid = 420;
-	pidinfo->root = "init";
-	// printf("pid: %ld\nroot: %s\n", pidinfo->pid, pidinfo->root);
+		pidinfo->pid = 420;
+		pidinfo->root = "init";
+		printf("pid: %ld\nroot: %s\n", pidinfo->pid, pidinfo->root);
 	}
 	// long int amma = syscall(333, pidinfo, 1);
 	printf("\n======KERNELSPACE======\n");
