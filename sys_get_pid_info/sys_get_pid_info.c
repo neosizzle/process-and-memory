@@ -97,8 +97,11 @@ SYSCALL_DEFINE2(get_pid_info, struct pid_info __user *, info, int, pid)
 	// if (copy_to_user(info, res, sizeof(struct pid_info)) != 0) {
 	// 	return -1;
 	// }
-	info->pid = 69;
-	info->root = "sixtynine";
+	
+	long test = 69;
+	if (copy_to_user(&(info->pid), &test, sizeof(long)) != 0) {
+		return -1;
+	}
 	printk("returning address %p\n", res);
 	return 0;
 }
