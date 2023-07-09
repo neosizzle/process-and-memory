@@ -36,7 +36,7 @@ static struct pid_info create_pid_info(int pid)
 	long *children;
 
 	printk("[DEBUG] createpidinfo 0\n");
-	res = kmalloc(sizeof(struct pid_info), GFP_USER);
+	// res = kmalloc(sizeof(struct pid_info), GFP_USER);
 	if (!task)
 	{
 		printk("[DEBUG] cant find task? \n");
