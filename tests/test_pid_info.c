@@ -161,7 +161,7 @@ int main(int argc)
 
 	struct pid_info* pidinfo = malloc(sizeof(struct pid_info));
 	pidinfo->pid = 69;
-	long int amma = syscall(333, pidinfo, 1);
+	long int amma = syscall(333, pidinfo, 3);
 	printf("System call test0 returned %ld\n", amma);
 	if (amma == -1)
 	{
