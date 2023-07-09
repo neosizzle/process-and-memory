@@ -44,18 +44,22 @@ static struct pid_info create_pid_info(int pid)
 
 	// add first child
 	// struct list_head head = list_entry(og_child, struct task_struct, children);
-	struct task_struct *child_task = list_entry(og_child, struct task_struct, children);
-	if (child_task == 0)
-		return res;
+	// struct task_struct *child_task = list_entry(og_child, struct task_struct, children);
+	// if (child_task == 0)
+	// 	return res;
 
-	struct list_head *curr_child = og_child->next;
-	child_task = list_entry(og_child->next, struct task_struct, children);
-	while (curr_child != og_child)
-	{
-		// add subsequent children...
-		child_task = list_entry(curr_child, struct task_struct, children);
-		printk("next child  pid %d, name %s\n", child_task->pid, child_task->comm);
-		curr_child = curr_child->next;
+	// struct list_head *curr_child = og_child->next;
+	// child_task = list_entry(og_child->next, struct task_struct, children);
+	// while (curr_child != og_child)
+	// {
+	// 	// add subsequent children...
+	// 	child_task = list_entry(curr_child, struct task_struct, children);
+	// 	printk("next child  pid %d, name %s\n", child_task->pid, child_task->comm);
+	// 	curr_child = curr_child->next;
+	// }
+
+	list_for_each_entry(child_task, &task->children, sibling) {
+   		printk(KERN_INFO "Child PID: %d\n", child_task->pid);
 	}
 
 	return res;
