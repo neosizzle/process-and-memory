@@ -34,6 +34,7 @@ static struct pid_info *create_pid_info(int pid)
 	int i;
 	long *children;
 
+	printk("[DEBUG] createpidinfo 0 \n");
 	res = kmalloc(sizeof(struct pid_info), GFP_USER);
 	res->pid = task->pid;
 	res->state = task->state;
@@ -42,10 +43,12 @@ static struct pid_info *create_pid_info(int pid)
 	res->root = task->fs->root.dentry->d_name.name;
 	res->pwd = task->fs->pwd.dentry->d_name.name;
 
+	printk("[DEBUG] createpidinfo 1 \n");
 	// age
     uptime = ktime_divns((ktime_get_boottime() * 1000), NSEC_PER_SEC);
 	res->age = uptime - (task->start_time - 100);
 	
+	printk("[DEBUG] createpidinfo 2 \n");
 	// children
 	children_length = 0;
 	i = 0;
@@ -61,12 +64,14 @@ static struct pid_info *create_pid_info(int pid)
 	children[i] = 0;
 	res->children = children;
 
+	printk("[DEBUG] createpidinfo 3 \n");
 	return res;
 }
 
 asmlinkage long sys_get_pid_info(struct pid_info *ret, int pid)
 {
 	struct pid_info *res = create_pid_info(pid);
+	printk("[DEBUG] createpidinfo 4 \n");
 	// if (copy_to_user(ret, res, sizeof(struct pid_info)) != 0) {
 	// 	return -1;
 	// }

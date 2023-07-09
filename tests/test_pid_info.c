@@ -159,11 +159,11 @@ int main(int argc)
 	printf("\n======USERSPACE======\n");
 	read_from_vfs(pid, iterate_parent_and_children);
 
-	// long int amma = syscall(333, 1);
-	// printf("System call test0 returned %ld\n", amma);
-	// if (amma == -1)
-	// {
-	// printf("errmsg %s \n", strerror(errno));
-	// }
+	long int amma = syscall(333, 1);
+	printf("System call test0 returned %ld\n", amma);
+	if (amma == -1)
+	{
+	printf("errmsg %s \n", strerror(errno));
+	}
 	return 0;
 }
