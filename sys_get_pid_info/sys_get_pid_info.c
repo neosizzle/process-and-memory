@@ -67,9 +67,9 @@ static struct pid_info *create_pid_info(int pid)
 asmlinkage long sys_get_pid_info(struct pid_info *ret, int pid)
 {
 	struct pid_info *res = create_pid_info(pid);
-	// if (copy_to_user(ret, res, sizeof(struct pid_info)) != 0) {
-	// 	return -1;
-	// }
+	if (copy_to_user(ret, res, sizeof(struct pid_info)) != 0) {
+		return -1;
+	}
 	printk("returning address %p\n", res);
 	return 0;
 }
