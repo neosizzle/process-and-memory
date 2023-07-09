@@ -31,7 +31,7 @@ static struct pid_info *create_pid_info(int pid)
 	struct task_struct *child_task;
 	int children_length;
 	int i;
-	long children;
+	long *children;
 
 	res = kmalloc(sizeof(struct pid_info), GFP_USER);
 	res->pid = task->pid;
