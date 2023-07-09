@@ -9,6 +9,7 @@
 #include <linux/sched.h>
 #include <linux/pid.h>
 #include <linux/timekeeping.h>
+#include <linux/slab.h>
 
 struct pid_info
 {
