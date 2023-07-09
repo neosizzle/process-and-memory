@@ -25,9 +25,9 @@
 // 	const char*	pwd;
 // };
 
-static struct pid_info *create_pid_info(int pid)
+static struct pid_info create_pid_info(int pid)
 {
-	struct pid_info *res;
+	struct pid_info res;
 	struct task_struct *task = find_task_by_vpid(pid);
 	s64  uptime;
 	struct task_struct *child_task;
@@ -92,14 +92,13 @@ static struct pid_info *create_pid_info(int pid)
 
 SYSCALL_DEFINE2(get_pid_info, struct pid_info __user *, info, int, pid)
 {
-	struct pid_info *res = create_pid_info(pid);
+	struct pid_info res = create_pid_info(pid);
 	printk("[DEBUG] createpidinfo 4 \n");
 	// if (copy_to_user(info, res, sizeof(struct pid_info)) != 0) {
 	// 	return -1;
 	// }
-	
-	long test = 69;
-	if (copy_to_user(&(info->pid), &test, sizeof(long)) != 0) {
+
+	if (copy_to_user(&(info->pid), &(res.pid), sizeof(long)) != 0) {
 		return -1;
 	}
 	printk("returning address %p\n", res);
