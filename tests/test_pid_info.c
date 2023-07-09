@@ -164,7 +164,7 @@ int main(int argc)
 	printf("\n======KERNELSPACE======\n");
 	pidinfo->pid = 420;
 	pidinfo->root = "init";
-	printf("pid: %ld\nroot: %s\n", pidinfo->pid, pidinfo->root);
+	// printf("pid: %ld\nroot: %s\n", pidinfo->pid, pidinfo->root);
 	// printf("System call test0 returned %ld\n", amma);
 	// if (amma == -1)
 	// {
