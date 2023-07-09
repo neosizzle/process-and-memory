@@ -1,11 +1,14 @@
 #include <linux/linkage.h>
 #include <linux/kernel.h>
-#include <linux/sched.h>
 #include <linux/ktime.h>
 #include <linux/uaccess.h>
 #include <linux/list.h>
 #include <linux/fs_struct.h>
 #include <linux/dcache.h>
+#include <linux/sched.h>
+#include <linux/pid.h>
+#include <linux/timekeeping.h>
+#include <linux/slab.h>
 
 #define  _SC_CLK_TCK  100
 
