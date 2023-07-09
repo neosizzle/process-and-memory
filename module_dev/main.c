@@ -43,6 +43,7 @@ static struct pid_info *create_pid_info(int pid)
 
 	// age
     uptime = ktime_divns((ktime_get_boottime() * 1000), NSEC_PER_SEC);
+	printk("uptime: %d\n", uptime);
 	res->age = uptime - (task->start_time - 100);
 	
 	// children
