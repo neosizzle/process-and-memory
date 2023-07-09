@@ -9,7 +9,6 @@
 #include <linux/sched.h>
 #include <linux/pid.h>
 #include <linux/timekeeping.h>
-#include <linux/slab.h>
 
 struct pid_info
 {
@@ -53,7 +52,6 @@ static struct pid_info create_pid_info(int pid)
 
 	long children[children_length + 1];
 
-	children = kmalloc(sizeof(children_length + 1), GFP_USER);
 	list_for_each_entry(child_task, &task->children, sibling) {
    		children[i++] = child_task->pid;
 	}
