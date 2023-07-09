@@ -9,6 +9,7 @@
 #include <linux/pid.h>
 #include <linux/timekeeping.h>
 #include <linux/slab.h>
+#include <linux/syscalls.h>
 
 #define  _SC_CLK_TCK  100
 
@@ -88,9 +89,14 @@ long sys_get_pid_info(struct pid_info *ret, int pid)
 	return 0;
 }
 
-asmlinkage long __x64_sys_get_pid_info(struct pid_info __user *ret, int pid)
+// asmlinkage long __x64_sys_get_pid_info(struct pid_info __user *ret, int pid)
+// {
+// 	printk("[DEBUG] ret pid recieved %d", ret->pid);
+// 	return pid;
+// 	// return sys_get_pid_info(ret, pid);
+// }
+
+SYSCALL_DEFINE2(get_pid_info, struct pid_info __user *, info, int, pid)
 {
-	printk("[DEBUG] ret pid recieved %d", ret->pid);
 	return pid;
-	// return sys_get_pid_info(ret, pid);
 }
