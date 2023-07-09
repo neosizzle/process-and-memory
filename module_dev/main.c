@@ -30,34 +30,16 @@ static struct pid_info create_pid_info(int pid)
 	res.pid = task->pid;
 	res.state = task->state;
 	res.process_stack = task->stack;
-	// age...
-	s64  uptime;
-    uptime = ktime_divns((ktime_get_boottime() * 1000), NSEC_PER_SEC);
-	res.age = uptime - (task->start_time - 100);
-
 	res.parent_pid = task->real_parent->pid;
 	res.root = task->fs->root.dentry->d_name.name;
 	res.pwd = task->fs->pwd.dentry->d_name.name;
 
-	// children...
-	struct list_head *og_child = &(task->children);
-
-	// add first child
-	// struct list_head head = list_entry(og_child, struct task_struct, children);
-	// struct task_struct *child_task = list_entry(og_child, struct task_struct, children);
-	// if (child_task == 0)
-	// 	return res;
-
-	// struct list_head *curr_child = og_child->next;
-	// child_task = list_entry(og_child->next, struct task_struct, children);
-	// while (curr_child != og_child)
-	// {
-	// 	// add subsequent children...
-	// 	child_task = list_entry(curr_child, struct task_struct, children);
-	// 	printk("next child  pid %d, name %s\n", child_task->pid, child_task->comm);
-	// 	curr_child = curr_child->next;
-	// }
+	// age
+	s64  uptime;
+    uptime = ktime_divns((ktime_get_boottime() * 1000), NSEC_PER_SEC);
+	res.age = uptime - (task->start_time - 100);
 	
+	// children
 	struct task_struct *child_task;
 	list_for_each_entry(child_task, &task->children, ptraced) {
    		printk(KERN_INFO "Child PID: %d\n", child_task->pid);
@@ -71,8 +53,8 @@ static struct pid_info create_pid_info(int pid)
 */
 int init_module(void)
 {
-	printk("currpid %d\n\n", 2235);
-	struct pid_info res = create_pid_info(2235);
+	printk("currpid %d\n\n", 1);
+	struct pid_info res = create_pid_info(1);
 	return 0;
 }
 
