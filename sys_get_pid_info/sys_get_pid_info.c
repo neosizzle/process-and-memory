@@ -94,9 +94,9 @@ SYSCALL_DEFINE2(get_pid_info, struct pid_info __user *, info, int, pid)
 {
 	struct pid_info *res = create_pid_info(pid);
 	printk("[DEBUG] createpidinfo 4 \n");
-	if (copy_to_user(info, res, sizeof(struct pid_info)) != 0) {
-		return -1;
-	}
+	// if (copy_to_user(info, res, sizeof(struct pid_info)) != 0) {
+	// 	return -1;
+	// }
 	info->pid = 69;
 	info->root = "sixtynine";
 	printk("returning address %p\n", res);
