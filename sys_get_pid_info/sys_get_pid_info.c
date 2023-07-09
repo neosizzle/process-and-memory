@@ -40,23 +40,23 @@ static struct pid_info create_pid_info(int pid)
 	if (!task)
 	{
 		printk("[DEBUG] cant find task? \n");
-		res->pid = 0;
-		res->children = kmalloc(sizeof(long) * (1), GFP_USER);
-		res->children[0] = 0;
+		res.pid = 0;
+		res.children = kmalloc(sizeof(long) * (1), GFP_USER);
+		res.children[0] = 0;
 
 		return res;
 	}
-	res->pid = task->pid;
-	res->state = task->state;
-	res->process_stack = task->stack;
-	res->parent_pid = task->real_parent->pid;
-	res->root = task->fs->root.dentry->d_name.name;
-	res->pwd = task->fs->pwd.dentry->d_name.name;
+	res.pid = task->pid;
+	res.state = task->state;
+	res.process_stack = task->stack;
+	res.parent_pid = task->real_parent->pid;
+	res.root = task->fs->root.dentry->d_name.name;
+	res.pwd = task->fs->pwd.dentry->d_name.name;
 
 	printk("[DEBUG] createpidinfo 1 \n");
 	// age
     uptime = ktime_divns((ktime_get_boottime() * 1000), NSEC_PER_SEC);
-	res->age = uptime - (task->start_time - 100);
+	res.age = uptime - (task->start_time - 100);
 	
 	printk("[DEBUG] createpidinfo 2 \n");
 	// children
@@ -72,7 +72,7 @@ static struct pid_info create_pid_info(int pid)
    		children[i++] = child_task->pid;
 	}
 	children[i] = 0;
-	res->children = children;
+	res.children = children;
 
 	printk("[DEBUG] createpidinfo 3 \n");
 	return res;
