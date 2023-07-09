@@ -159,14 +159,16 @@ int main(int argc)
 	printf("\n======USERSPACE======\n");
 	read_from_vfs(pid, iterate_parent_and_children);
 
-	struct pid_info* pidinfo = malloc(sizeof(struct pid_info));
-	long int amma = syscall(333, pidinfo, 1);
+	struct pid_info* pidinfo = (struct pid_info*)malloc(sizeof(struct pid_info));
+	// long int amma = syscall(333, pidinfo, 1);
 	printf("\n======KERNELSPACE======\n");
+	pidinfo->pid = 420;
+	pidinfo->root = "init";
 	printf("pid: %ld\nroot: %s\n", pidinfo->pid, pidinfo->root);
-	printf("System call test0 returned %ld\n", amma);
-	if (amma == -1)
-	{
-	printf("errmsg %s \n", strerror(errno));
-	}
+	// printf("System call test0 returned %ld\n", amma);
+	// if (amma == -1)
+	// {
+	// printf("errmsg %s \n", strerror(errno));
+	// }
 	return 0;
 }
