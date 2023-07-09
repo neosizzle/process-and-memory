@@ -1,7 +1,7 @@
 CC = gcc
 INCS = inc
 BUILDDIR=build/
-C_FLAGS = -I${INCS}
+C_FLAGS = -I${INCS} -fsanitize=address
 
 NAME_0 = test0
 SRCS_0 = test_pid_info.c
