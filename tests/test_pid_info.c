@@ -159,12 +159,18 @@ int main(int argc)
 	printf("\n======USERSPACE======\n");
 	read_from_vfs(pid, iterate_parent_and_children);
 
-	struct pid_info* pidinfo = (struct pid_info*)malloc(sizeof(struct pid_info));
-	// long int amma = syscall(333, pidinfo, 1);
-	printf("\n======KERNELSPACE======\n");
+	struct pid_info* pidinfo = (struct pid_info*) malloc(sizeof(struct pid_info));
+	if (!pidinfo)
+		printf("OOP MALLOC FAIL\n");
+	else
+	{
 	pidinfo->pid = 420;
 	pidinfo->root = "init";
 	// printf("pid: %ld\nroot: %s\n", pidinfo->pid, pidinfo->root);
+	}
+	// long int amma = syscall(333, pidinfo, 1);
+	printf("\n======KERNELSPACE======\n");
+
 	// printf("System call test0 returned %ld\n", amma);
 	// if (amma == -1)
 	// {
