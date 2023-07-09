@@ -41,9 +41,22 @@ static struct pid_info create_pid_info(int pid)
 	
 	// children
 	struct task_struct *child_task;
+	int children_length;
+	int i;
+
+	children_length = 0;
+	i = 0;
+	long *children;
 	list_for_each_entry(child_task, &task->children, sibling) {
    		printk(KERN_INFO "Child PID: %d\n", child_task->pid);
+		++children_length;
 	}
+	children = kmalloc(sizeof(children_length + 1), GFP_USER);
+	list_for_each_entry(child_task, &task->children, sibling) {
+   		children[i++] = child_task->pid;
+	}
+	children[i] = NULL;
+	res.children = children;
 
 	return res;
 }
