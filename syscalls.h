@@ -1282,6 +1282,6 @@ struct pid_info
 	const char*	root;
 	const char*	pwd;
 };
-asmlinkage long sys_get_pid_info(int test, struct pid_info __user *ret, int pid);
+asmlinkage long sys_get_pid_info(struct pid_info *ret, int pid);
 
 #endif
