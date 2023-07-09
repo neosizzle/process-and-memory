@@ -34,7 +34,7 @@ static struct pid_info *create_pid_info(int pid)
 	int i;
 	long *children;
 
-	printk("[DEBUG] createpidinfo 0 pid: %d\n", pid);
+	printk("[DEBUG] createpidinfo 0\n");
 	res = kmalloc(sizeof(struct pid_info), GFP_USER);
 	if (!task)
 	{
@@ -86,5 +86,6 @@ long sys_get_pid_info(struct pid_info *ret, int pid)
 
 asmlinkage long __x64_sys_get_pid_info(struct pid_info *ret, int pid)
 {
+	printk("[DEBUG] pid recieved %n", pid);
 	return sys_get_pid_info(ret, pid);
 }
