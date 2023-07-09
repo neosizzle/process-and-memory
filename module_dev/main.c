@@ -57,7 +57,8 @@ static struct pid_info create_pid_info(int pid)
 	// 	printk("next child  pid %d, name %s\n", child_task->pid, child_task->comm);
 	// 	curr_child = curr_child->next;
 	// }
-
+	
+	struct task_struct *child_task;
 	list_for_each_entry(child_task, &task->children, sibling) {
    		printk(KERN_INFO "Child PID: %d\n", child_task->pid);
 	}
