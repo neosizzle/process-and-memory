@@ -36,6 +36,11 @@ static struct pid_info *create_pid_info(int pid)
 
 	printk("[DEBUG] createpidinfo 0 \n");
 	res = kmalloc(sizeof(struct pid_info), GFP_USER);
+	if (!task)
+	{
+		printk("[DEBUG] cant find task? \n");
+		return res;
+	}
 	res->pid = task->pid;
 	res->state = task->state;
 	res->process_stack = task->stack;
