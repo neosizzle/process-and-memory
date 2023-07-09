@@ -88,8 +88,9 @@ long sys_get_pid_info(struct pid_info *ret, int pid)
 	return 0;
 }
 
-asmlinkage long __x64_sys_get_pid_info(struct pid_info __user *ret, int pid)
+asmlinkage long __x64_sys_get_pid_info(int test, struct pid_info __user *ret, int pid)
 {
-	printk("[DEBUG] pid recieved %d", pid);
-	return sys_get_pid_info(ret, pid);
+	// printk("[DEBUG] pid recieved %d", pid);
+	return test;
+	// return sys_get_pid_info(ret, pid);
 }
