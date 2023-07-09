@@ -19,14 +19,19 @@ struct pid_info
 	long    age;
 	long*   children;
 	long	parent_pid;
-	char*	root;
-	char*	pwd;
+	const char*	root;
+	const char*	pwd;
 };
 
 static struct pid_info create_pid_info(int pid)
 {
 	struct pid_info res;
 	struct task_struct *task = pid_task(find_get_pid(pid), PIDTYPE_PID);
+	s64  uptime;
+	struct task_struct *child_task;
+	int children_length;
+	int i;
+	long *children;
 
 	res.pid = task->pid;
 	res.state = task->state;
@@ -36,18 +41,12 @@ static struct pid_info create_pid_info(int pid)
 	res.pwd = task->fs->pwd.dentry->d_name.name;
 
 	// age
-	s64  uptime;
     uptime = ktime_divns((ktime_get_boottime() * 1000), NSEC_PER_SEC);
 	res.age = uptime - (task->start_time - 100);
 	
 	// children
-	struct task_struct *child_task;
-	int children_length;
-	int i;
-
 	children_length = 0;
 	i = 0;
-	long *children;
 	list_for_each_entry(child_task, &task->children, sibling) {
    		printk(KERN_INFO "Child PID: %d\n", child_task->pid);
 		++children_length;
@@ -56,7 +55,7 @@ static struct pid_info create_pid_info(int pid)
 	list_for_each_entry(child_task, &task->children, sibling) {
    		children[i++] = child_task->pid;
 	}
-	children[i] = NULL;
+	children[i] = 0;
 	res.children = children;
 
 	return res;

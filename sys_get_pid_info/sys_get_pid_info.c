@@ -17,8 +17,8 @@ struct pid_info
 	long    age;
 	long*   children;
 	long	parent_pid;
-	char*	root;
-	char*	pwd;
+	const char*	root;
+	const char*	pwd;
 };
 
 static struct pid_info create_pid_info(int pid)
