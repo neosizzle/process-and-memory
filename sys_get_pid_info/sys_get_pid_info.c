@@ -101,6 +101,6 @@ SYSCALL_DEFINE2(get_pid_info, struct pid_info __user *, info, int, pid)
 	if (copy_to_user(&(info->pid), &(res.pid), sizeof(long)) != 0) {
 		return -1;
 	}
-	printk("returning address %p\n", res);
+	// printk("returning address %p\n", res);
 	return 0;
 }
