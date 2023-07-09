@@ -53,7 +53,7 @@ static struct pid_info *create_pid_info(int pid)
 		++children_length;
 	}
 
-	children = kmalloc(sizeof(long * (children_length + 1)), GFP_KERNEL);
+	children = kmalloc(sizeof(long) * (children_length + 1), GFP_KERNEL);
 
 	list_for_each_entry(child_task, &task->children, sibling) {
    		children[i++] = child_task->pid;
