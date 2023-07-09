@@ -27,7 +27,7 @@ struct pid_info
 static struct pid_info *create_pid_info(int pid)
 {
 	struct pid_info *res;
-	struct task_struct *task = pid_task(find_get_pid(pid), PIDTYPE_PID);
+	struct task_struct *task = find_task_by_vpid(pid);
 	s64  uptime;
 	struct task_struct *child_task;
 	int children_length;
