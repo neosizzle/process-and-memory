@@ -66,8 +66,8 @@ static struct pid_info create_pid_info(int pid)
 */
 int init_module(void)
 {
-	printk("currpid %d\n\n", current->real_parent->pid);
-	struct pid_info res = create_pid_info(current->real_parent->pid);
+	printk("currpid %d\n\n", 2235);
+	struct pid_info res = create_pid_info(2235);
 	return 0;
 }
 
