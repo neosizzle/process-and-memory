@@ -9,6 +9,7 @@
 #include <linux/sched.h>
 #include <linux/pid.h>
 #include <linux/timekeeping.h>
+#include <linux/slab.h>
 
 struct pid_info
 {
@@ -22,25 +23,27 @@ struct pid_info
 	const char*	pwd;
 };
 
-static struct pid_info create_pid_info(int pid)
+static struct pid_info *create_pid_info(int pid)
 {
-	struct pid_info res;
+	struct pid_info *res;
 	struct task_struct *task = pid_task(find_get_pid(pid), PIDTYPE_PID);
 	s64  uptime;
 	struct task_struct *child_task;
 	int children_length;
 	int i;
+	long children;
 
-	res.pid = task->pid;
-	res.state = task->state;
-	res.process_stack = task->stack;
-	res.parent_pid = task->real_parent->pid;
-	res.root = task->fs->root.dentry->d_name.name;
-	res.pwd = task->fs->pwd.dentry->d_name.name;
+	res = kmalloc(sizeof(struct pid_info), GFP_USER);
+	res->pid = task->pid;
+	res->state = task->state;
+	res->process_stack = task->stack;
+	res->parent_pid = task->real_parent->pid;
+	res->root = task->fs->root.dentry->d_name.name;
+	res->pwd = task->fs->pwd.dentry->d_name.name;
 
 	// age
     uptime = ktime_divns((ktime_get_boottime() * 1000), NSEC_PER_SEC);
-	res.age = uptime - (task->start_time - 100);
+	res->age = uptime - (task->start_time - 100);
 	
 	// children
 	children_length = 0;
@@ -50,13 +53,13 @@ static struct pid_info create_pid_info(int pid)
 		++children_length;
 	}
 
-	long children[children_length + 1];
+	children = kmalloc(sizeof(long * (children_length + 1)), GFP_KERNEL);
 
 	list_for_each_entry(child_task, &task->children, sibling) {
    		children[i++] = child_task->pid;
 	}
 	children[i] = 0;
-	res.children = children;
+	res->children = children;
 
 	return res;
 }
@@ -67,7 +70,7 @@ static struct pid_info create_pid_info(int pid)
 int init_module(void)
 {
 	printk("currpid %d\n\n", 1);
-	struct pid_info res = create_pid_info(1);
+	create_pid_info(1);
 	return 0;
 }
 
