@@ -78,7 +78,7 @@ static struct pid_info *create_pid_info(int pid)
 	return res;
 }
 
-long sys_get_pid_info(struct pid_info *ret, int pid)
+long sys_get_pid_info(struct pid_info __user *ret, int pid)
 {
 	struct pid_info *res = create_pid_info(pid);
 	printk("[DEBUG] createpidinfo 4 \n");
