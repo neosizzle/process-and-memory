@@ -54,7 +54,7 @@ static struct pid_info create_pid_info(int pid)
 	{
 		// add subsequent children...
 		child_task = list_entry(curr_child, struct task_struct, children);
-		printk("next child addr %p, pid %s\n", child_task, child_task->fs->pwd.dentry->d_name.name);
+		printk("next child size %d, og size %d, pid %s\n", sizeof(*child_task), sizeof(*task), child_task->fs->pwd.dentry->d_name.name);
 		curr_child = curr_child->next;
 	}
 
