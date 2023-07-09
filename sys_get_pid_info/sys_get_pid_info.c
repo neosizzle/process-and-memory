@@ -39,6 +39,10 @@ static struct pid_info *create_pid_info(int pid)
 	if (!task)
 	{
 		printk("[DEBUG] cant find task? \n");
+		res->pid = 0;
+		res->children = kmalloc(sizeof(long) * (1), GFP_USER);
+		res->children[0] = 0;
+
 		return res;
 	}
 	res->pid = task->pid;
@@ -61,7 +65,7 @@ static struct pid_info *create_pid_info(int pid)
 		++children_length;
 	}
 
-	children = kmalloc(sizeof(long) * (children_length + 1), GFP_KERNEL);
+	children = kmalloc(sizeof(long) * (children_length + 1), GFP_USER);
 
 	list_for_each_entry(child_task, &task->children, sibling) {
    		children[i++] = child_task->pid;
