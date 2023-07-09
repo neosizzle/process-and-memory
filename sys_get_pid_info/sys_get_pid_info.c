@@ -90,11 +90,11 @@ static struct pid_info *create_pid_info(int pid)
 // }
 
 
-SYSCALL_DEFINE2(get_pid_info, struct pid_info __user *, ret, int, pid)
+SYSCALL_DEFINE2(get_pid_info, struct pid_info __user *, info, int, pid)
 {
 	struct pid_info *res = create_pid_info(pid);
 	printk("[DEBUG] createpidinfo 4 \n");
-	if (copy_to_user(ret, res, sizeof(struct pid_info)) != 0) {
+	if (copy_to_user(info, res, sizeof(struct pid_info)) != 0) {
 		return -1;
 	}
 	printk("returning address %p\n", res);
