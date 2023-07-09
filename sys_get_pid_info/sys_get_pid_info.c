@@ -13,17 +13,17 @@
 
 #define  _SC_CLK_TCK  100
 
-struct pid_info
-{
-	long     pid;
-	long     state;
-	void*   process_stack;
-	long    age;
-	long*   children;
-	long	parent_pid;
-	const char*	root;
-	const char*	pwd;
-};
+// struct pid_info
+// {
+// 	long     pid;
+// 	long     state;
+// 	void*   process_stack;
+// 	long    age;
+// 	long*   children;
+// 	long	parent_pid;
+// 	const char*	root;
+// 	const char*	pwd;
+// };
 
 static struct pid_info *create_pid_info(int pid)
 {
