@@ -82,21 +82,15 @@ long sys_get_pid_info(struct pid_info *ret, int pid)
 {
 	struct pid_info *res = create_pid_info(pid);
 	printk("[DEBUG] createpidinfo 4 \n");
-	// if (copy_to_user(ret, res, sizeof(struct pid_info)) != 0) {
-	// 	return -1;
-	// }
+	if (copy_to_user(ret, res, sizeof(struct pid_info)) != 0) {
+		return -1;
+	}
 	printk("returning address %p\n", res);
 	return 0;
 }
 
-// asmlinkage long __x64_sys_get_pid_info(struct pid_info __user *ret, int pid)
-// {
-// 	printk("[DEBUG] ret pid recieved %d", ret->pid);
-// 	return pid;
-// 	// return sys_get_pid_info(ret, pid);
-// }
 
-SYSCALL_DEFINE2(get_pid_info, struct pid_info __user *, info, int, pid)
+SYSCALL_DEFINE2(get_pid_info, struct pid_info __user *, ret, int, pid)
 {
-	return pid;
+	return sys_get_pid_info(ret, pid);
 }
