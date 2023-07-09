@@ -75,7 +75,6 @@ void read_from_vfs(long pid, int iterate_parent_and_children)
 	
 	// age math
 	long age = ft_atoi(age_str);
-	printf("uptime: %d\n", get_uptime());
 	long time = get_uptime() - (age / sysconf(_SC_CLK_TCK)) ;
 
 	printf("pid_str, %s\nstate_str, %s\nppid, %s\nage, %ld\nstack, %s\n",
