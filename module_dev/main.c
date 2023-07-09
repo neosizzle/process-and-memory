@@ -76,8 +76,8 @@ int init_module(void)
 	pidinfo->state,
 	pidinfo->parent_pid,
 	pidinfo->age,
-	pidinfo->stack
-	)
+	pidinfo->process_stack
+	);
 	return 0;
 }
 
