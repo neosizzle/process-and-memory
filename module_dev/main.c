@@ -80,6 +80,7 @@ static void walk_to_root(struct dentry *entry)
 	res = kmalloc(strlen(temp) + 2, GFP_KERNEL);
 	strcpy(res, "/");
 	strcat(res, temp);
+	kfree(temp);
 	printk("res %s\n", res);
 }
 
