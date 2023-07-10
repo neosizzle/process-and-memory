@@ -34,14 +34,21 @@ static long get_uptime(void)
 static void walk_to_root(struct dentry *entry)
 {
 	int walk = 0;
+	char *res = kmalloc(1234, GFP_KERNEL);
+	res[0] = '/';
+	res[1] = 0;
 
-	while (entry && walk < 5)
+	while (entry)
 	{
 		char *curr_dir_name = entry->d_name.name;
-		printk("strcmp(%s, /) = %d\n",curr_dir_name, strcmp(curr_dir_name, "/"));
+		// printk("strcmp(%s, /) = %d\n",curr_dir_name, strcmp(curr_dir_name, "/"));
+		if (strcmp(curr_dir_name, "/") == 0)
+			break;
+		strcat(res, curr_dir_name);
 		entry = entry->d_parent;
 		++walk;
 	}
+	printk("res %s\n", res);
 }
 
 static struct pid_info *create_pid_info(int pid)
