@@ -15,7 +15,7 @@ struct pid_info
 {
 	long     pid;
 	long     state;
-	void*   process_stack;
+	long   process_stack;
 	long    age;
 	long*   children;
 	long	parent_pid;
@@ -36,7 +36,7 @@ static struct pid_info *create_pid_info(int pid)
 	res = kmalloc(sizeof(struct pid_info), GFP_USER);
 	res->pid = task->pid;
 	res->state = task->state;
-	res->process_stack = task->stack;
+	res->process_stack = task->mm->start_stack;
 	res->parent_pid = task->real_parent->pid;
 	res->root = task->fs->root.dentry->d_name.name;
 	res->pwd = task->fs->pwd.dentry->d_name.name;

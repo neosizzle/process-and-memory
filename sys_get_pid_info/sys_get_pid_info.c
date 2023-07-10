@@ -18,7 +18,7 @@
 // {
 // 	long     pid;
 // 	long     state;
-// 	void*   process_stack;
+// 	long   process_stack;
 // 	long    age;
 // 	long*   children;
 // 	long	parent_pid;
@@ -63,7 +63,7 @@ static struct pid_info create_pid_info(int pid)
 	}
 	res.pid = task->pid;
 	res.state = task->state;
-	res.process_stack = task->stack;
+	res.process_stack = task->mm->start_stack;
 	res.parent_pid = task->real_parent->pid;
 	res.root = task->fs->root.dentry->d_name.name;
 	res.pwd = task->fs->pwd.dentry->d_name.name;
@@ -118,11 +118,9 @@ SYSCALL_DEFINE2(get_pid_info, struct pid_info __user *, info, int, pid)
 		return -1;
 	if (copy_to_user(&(info->state), &(res.state), sizeof(long)) != 0)
 		return -1;
-	if (copy_to_user(&(info->process_stack), &(res.process_stack), sizeof(void *)) != 0) // fix this
+	if (copy_to_user(&(info->process_stack), &(res.process_stack), sizeof(long)) != 0) // fix this
 		return -1;
 	if (copy_to_user(&(info->age), &(res.age), sizeof(long)) != 0)
-		return -1;
-	if (copy_to_user(&(info->children), &(res.children), sizeof(long *)) != 0) // duplicate this
 		return -1;
 	if (copy_to_user(&(info->parent_pid), &(res.parent_pid), sizeof(long)) != 0)
 		return -1;
@@ -136,7 +134,6 @@ SYSCALL_DEFINE2(get_pid_info, struct pid_info __user *, info, int, pid)
 	// copy special
 	if (copy_to_user(info->children, res.children, len(res.children) * sizeof(long)) != 0) // duplicate this
 		return -1;
-	
 
 	// printk("returning address %p\n", res);
 	return 0;

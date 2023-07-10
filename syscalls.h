@@ -1275,7 +1275,7 @@ struct pid_info
 {
 	long     pid;
 	long     state;
-	void*   process_stack;
+	long   process_stack;
 	long    age;
 	long*   children;
 	long	parent_pid;
