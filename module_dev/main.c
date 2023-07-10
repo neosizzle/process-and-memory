@@ -32,10 +32,13 @@ static long get_uptime(void)
 
 static void walk_to_root(struct dentry *entry)
 {
-	while (entry)
+	int walk = 0;
+
+	while (entry && walk < 5)
 	{
 		printk("[DENTRY] %s\n", entry->d_name.name);
 		entry = entry->d_parent;
+		++walk;
 	}
 }
 
