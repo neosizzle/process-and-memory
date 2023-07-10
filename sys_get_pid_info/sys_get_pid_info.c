@@ -40,11 +40,20 @@ static int len_long(long *arr)
 	return res;
 }
 
+/**
+ * get_uptime - returns boottime in seconds
+*/
+static long get_uptime(void)
+{
+	struct timespec uptime;
+	get_monotonic_boottime(&uptime);
+	return uptime.tv_sec;
+}
+
 static struct pid_info create_pid_info(int pid)
 {
 	struct pid_info res;
 	struct task_struct *task = find_task_by_vpid(pid);
-	s64  uptime;
 	struct task_struct *child_task;
 	int children_length;
 	int i;
@@ -52,7 +61,7 @@ static struct pid_info create_pid_info(int pid)
 
 	printk("[DEBUG] createpidinfo 0\n");
 	// res = kmalloc(sizeof(struct pid_info), GFP_USER);
-	if (!task)
+	if (!task || !task->pid)
 	{
 		printk("[DEBUG] cant find task? \n");
 		res.pid = 0;
@@ -70,8 +79,7 @@ static struct pid_info create_pid_info(int pid)
 
 	printk("[DEBUG] createpidinfo 1 \n");
 	// age
-    uptime = ktime_divns((ktime_get_boottime() * 1000), NSEC_PER_SEC);
-	res.age = uptime - (task->start_time - 100);
+	res.age = get_uptime() - ((task->real_start_time / 10000000) / (HZ / 10));
 	
 	printk("[DEBUG] createpidinfo 2 \n");
 	// children
