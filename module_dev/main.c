@@ -25,7 +25,7 @@ struct pid_info
 	const char*	pwd;
 };
 
-static long get_uptime()
+static long get_uptime(void)
 {
 	struct timespec uptime;
 	get_monotonic_boottime(&uptime);
