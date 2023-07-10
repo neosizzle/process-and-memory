@@ -165,7 +165,7 @@ int main(int argc)
 
 	long int amma = syscall(333, pidinfo, 1);
 	printf("\n======KERNELSPACE======\n");
-	printf("pid: %ld\nroot: %ld\n", pidinfo->pid, (long)pidinfo->process_stack);
+	printf("pid: %ld\nroot: %p\n", pidinfo->pid, (long)pidinfo->process_stack);
 
 	// printf("System call test0 returned %ld\n", amma);
 	// if (amma == -1)
