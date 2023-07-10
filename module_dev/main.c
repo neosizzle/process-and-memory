@@ -55,9 +55,9 @@ char	*ft_strdup(const char *s1)
 static void walk_to_root(struct dentry *entry)
 {
 	int walk = 0;
-	char *temp = kmalloc(2, GFP_KERNEL);
+	char *temp = kmalloc(1, GFP_KERNEL);
 	char *res;
-	temp[1] = 0;
+	temp[0] = 0;
 
 	while (entry)
 	{
