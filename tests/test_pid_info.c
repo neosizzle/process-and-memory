@@ -161,11 +161,12 @@ int main(int argc)
 
 	struct pid_info* pidinfo = (struct pid_info*) malloc(sizeof(struct pid_info));
 	pidinfo->pid =  0;
-	pidinfo->root = "init";
+	pidinfo->root = ft_calloc(1024, 1);
+	pidinfo->pwd = ft_calloc(1024, 1);
 
 	long int amma = syscall(333, pidinfo, 1);
 	printf("\n======KERNELSPACE======\n");
-	printf("pid: %ld\nroot: %ld\n", pidinfo->pid, (long)pidinfo->process_stack);
+	printf("pid: %ld\nroot: %s\n", pidinfo->pid, pidinfo->root);
 
 	// printf("System call test0 returned %ld\n", amma);
 	// if (amma == -1)

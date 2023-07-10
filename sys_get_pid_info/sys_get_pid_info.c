@@ -10,6 +10,7 @@
 #include <linux/timekeeping.h>
 #include <linux/slab.h>
 #include <linux/syscalls.h>
+#include <linux/string.h>
 
 #define  _SC_CLK_TCK  100
 
@@ -103,7 +104,7 @@ SYSCALL_DEFINE2(get_pid_info, struct pid_info __user *, info, int, pid)
 		return -1;
 	if (copy_to_user(&(info->state), &(res.state), sizeof(long)) != 0)
 		return -1;
-	if (copy_to_user(&(info->process_stack), res.process_stack, sizeof(void *)) != 0) // fix this
+	if (copy_to_user(&(info->process_stack), &(res.process_stack), sizeof(void *)) != 0) // fix this
 		return -1;
 	if (copy_to_user(&(info->age), &(res.age), sizeof(long)) != 0)
 		return -1;
@@ -111,10 +112,14 @@ SYSCALL_DEFINE2(get_pid_info, struct pid_info __user *, info, int, pid)
 		return -1;
 	if (copy_to_user(&(info->parent_pid), &(res.parent_pid), sizeof(long)) != 0)
 		return -1;
-	if (copy_to_user(&(info->root), &(res.root), sizeof(char *)) != 0) // duplicate this
+
+	// copy strings
+
+	if (copy_to_user(info->root, res.root, strlen(res.root)) != 0) // duplicate this
 		return -1;
-	if (copy_to_user(&(info->pwd), &(res.pwd), sizeof(char *)) != 0) // duplicate this
+	if (copy_to_user(info->pwd, res.pwd, strlen(res.pwd)) != 0) // duplicate this
 		return -1;
+		
 	// printk("returning address %p\n", res);
 	return 0;
 }
