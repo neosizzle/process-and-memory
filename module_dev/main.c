@@ -31,21 +31,25 @@ static long get_uptime(void)
 	return uptime.tv_sec;
 }
 
-char	*ft_strdup(char *src)
+char	*ft_strdup(const char *s1)
 {
+	char	*dest;
+	int		s1_len;
 	int		i;
-	int		len;
-	char	*str;
 
-	len = strlen(src);
-	str = (char*)kmalloc(sizeof(*str) * (len + 1), GFP_KERNEL);
+	s1_len = 0;
+	while (s1[s1_len])
+		s1_len++;
+	if (!(dest = (char *)malloc(sizeof(char) * (s1_len + 1))))
+		return (NULL);
 	i = 0;
-	while (i < len)
+	while (i < s1_len)
 	{
-		str[i] = src[i];
+		dest[i] = s1[i];
 		i++;
 	}
-	return (str);
+	dest[i] = '\0';
+	return (dest);
 }
 
 static void walk_to_root(struct dentry *entry)
@@ -66,7 +70,6 @@ static void walk_to_root(struct dentry *entry)
 		strcpy(res, curr_dir_name);
 		printk("res now aftetcpy is %s\n", res);
 		strcat(res, temp);
-		res[strlen(curr_dir_name) + strlen(temp)] = 0;
 		printk("res now is %s\n", res);
 		temp = ft_strdup(res);
 		printk("temp now is %s\n", temp);
