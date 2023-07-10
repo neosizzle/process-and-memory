@@ -64,7 +64,7 @@ void read_from_syscall(long pid, int interate_parent_and_children)
 		pidinfo->age,
 		pidinfo->process_stack,
 		pidinfo->root,
-		pidinfo->pwd,
+		pidinfo->pwd
 	);
 	// todo implement children iteration
 }
