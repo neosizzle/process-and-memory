@@ -36,6 +36,7 @@ static void walk_to_root(struct dentry *entry)
 	int walk = 0;
 	char *res = kmalloc(1234, GFP_KERNEL);
 	char *temp = kmalloc(1234, GFP_KERNEL);
+	char *test;
 	res[0] = '/';
 	res[1] = 0;
 	temp[0] = '/';
@@ -47,7 +48,8 @@ static void walk_to_root(struct dentry *entry)
 		// printk("strcmp(%s, /) = %d\n",curr_dir_name, strcmp(curr_dir_name, "/"));
 		if (strcmp(curr_dir_name, "/") == 0)
 			break;
-		strcat(temp, curr_dir_name);
+		test = strdup(curr_dir_name);
+		strcat(curr_dir_name, temp);
 		strcat(res, temp);
 
 		kfree(temp);
