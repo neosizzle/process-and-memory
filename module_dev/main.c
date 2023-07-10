@@ -11,6 +11,8 @@
 #include <linux/timekeeping.h>
 #include <linux/slab.h>
 
+#include <linux/ktime.h>
+
 struct pid_info
 {
 	long     pid;
@@ -22,6 +24,13 @@ struct pid_info
 	const char*	root;
 	const char*	pwd;
 };
+
+static long get_uptime()
+{
+	struct timespec uptime;
+	get_monotonic_boottime(&uptime);
+	return uptime.tv_sec;
+}
 
 static struct pid_info *create_pid_info(int pid)
 {
