@@ -37,9 +37,7 @@ char	*ft_strdup(char *src)
 	int		len;
 	char	*str;
 
-	len = 0;
-	while (src[len])
-		len++;
+	len = strlen(src);
 	str = (char*)kmalloc(sizeof(*str) * (len + 1), GFP_KERNEL);
 	i = 0;
 	while (i < len)
