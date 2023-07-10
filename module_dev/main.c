@@ -54,6 +54,7 @@ static void walk_to_root(struct dentry *entry)
 {
 	int walk = 0;
 	char *temp = kmalloc(2, GFP_KERNEL);
+	char *res;
 	temp[0] = '/';
 	temp[1] = 0;
 
