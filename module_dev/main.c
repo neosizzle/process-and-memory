@@ -86,7 +86,7 @@ int init_module(void)
 	pidinfo->parent_pid,
 	pidinfo->age,
 	pidinfo->process_stack,
-	pidinfo->cwd
+	pidinfo->pwd
 	);
 	return 0;
 }
