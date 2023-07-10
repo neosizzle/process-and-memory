@@ -31,59 +31,6 @@ static long get_uptime(void)
 	return uptime.tv_sec;
 }
 
-char	*ft_strdup(const char *s1)
-{
-	char	*dest;
-	int		s1_len;
-	int		i;
-
-	s1_len = 0;
-	while (s1[s1_len])
-		s1_len++;
-	if (!(dest = (char *)kmalloc(sizeof(char) * (s1_len + 1), GFP_KERNEL)))
-		return (NULL);
-	i = 0;
-	while (i < s1_len)
-	{
-		dest[i] = s1[i];
-		i++;
-	}
-	dest[i] = '\0';
-	return (dest);
-}
-
-static char *walk_to_root(struct dentry *entry)
-{
-	int walk = 0;
-	char *temp = kmalloc(1, GFP_KERNEL);
-	temp[0] = 0;
-	char *res;
-
-	while (entry)
-	{
-		char *curr_dir_name = entry->d_name.name;
-		// printk("strcmp(%s, /) = %d\n",curr_dir_name, strcmp(curr_dir_name, "/"));
-		if (strcmp(curr_dir_name, "/") == 0)
-			break;
-		res = kmalloc(strlen(curr_dir_name) + strlen(temp) + 2, GFP_KERNEL);
-		strcpy(res, curr_dir_name);
-		if (walk)
-			strcat(res, "/");
-		else
-			++walk;
-		strcat(res, temp);
-		kfree(temp);
-		temp = ft_strdup(res);
-		entry = entry->d_parent;
-		++walk;
-	}
-	res = kmalloc(strlen(temp) + 2, GFP_KERNEL);
-	strcpy(res, "/");
-	strcat(res, temp);
-	kfree(temp);
-	return res;
-}
-
 static struct pid_info *create_pid_info(int pid)
 {
 	struct pid_info *res;
