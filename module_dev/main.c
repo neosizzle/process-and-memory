@@ -10,6 +10,7 @@
 #include <linux/pid.h>
 #include <linux/timekeeping.h>
 #include <linux/slab.h>
+#include <linux/string.h>
 
 struct pid_info
 {
@@ -36,7 +37,8 @@ static void walk_to_root(struct dentry *entry)
 
 	while (entry && walk < 5)
 	{
-		printk("[DENTRY] %s\n", entry->d_name.name);
+		char *curr_dir_name = entry->d_name.name;
+		printf("strcmp(%s, /) = %d\n",curr_dir_name, strcmp(curr_dir_name, "/"));
 		entry = entry->d_parent;
 		++walk;
 	}
