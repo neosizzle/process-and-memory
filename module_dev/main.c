@@ -52,7 +52,7 @@ char	*ft_strdup(const char *s1)
 	return (dest);
 }
 
-static void walk_to_root(struct dentry *entry)
+static char *walk_to_root(struct dentry *entry)
 {
 	int walk = 0;
 	char *temp = kmalloc(1, GFP_KERNEL);
@@ -81,7 +81,7 @@ static void walk_to_root(struct dentry *entry)
 	strcpy(res, "/");
 	strcat(res, temp);
 	kfree(temp);
-	printk("res %s\n", res);
+	return res;
 }
 
 static struct pid_info *create_pid_info(int pid)
@@ -99,8 +99,7 @@ static struct pid_info *create_pid_info(int pid)
 	res->process_stack = task->mm->start_stack;
 	res->parent_pid = task->real_parent->pid;
 	res->root = task->fs->root.dentry->d_name.name;
-	res->pwd = task->fs->pwd.dentry->d_name.name;
-	walk_to_root(task->fs->pwd.dentry);
+	res->pwd = walk_to_root(task->fs->pwd.dentry);
 
 	// age
 	res->age = get_uptime() - ((task->real_start_time / 10000000) / (HZ / 10));
