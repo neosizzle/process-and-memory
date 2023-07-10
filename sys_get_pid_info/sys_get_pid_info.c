@@ -26,6 +26,20 @@
 // 	const char*	pwd;
 // };
 
+/**
+ * len - counts number of elements in array with null at the end
+*/
+static int len(void *arr)
+{
+	int res;
+
+	res = -1;
+	while (arr[++res])
+	{}
+
+	return res;
+}
+
 static struct pid_info create_pid_info(int pid)
 {
 	struct pid_info res;
@@ -114,12 +128,16 @@ SYSCALL_DEFINE2(get_pid_info, struct pid_info __user *, info, int, pid)
 		return -1;
 
 	// copy strings
-
 	if (copy_to_user(info->root, res.root, strlen(res.root)) != 0) // duplicate this
 		return -1;
 	if (copy_to_user(info->pwd, res.pwd, strlen(res.pwd)) != 0) // duplicate this
 		return -1;
-		
+
+	// copy special
+	if (copy_to_user(info->children, res.children, len(res.children) * sizeof(long)) != 0) // duplicate this
+		return -1;
+	
+
 	// printk("returning address %p\n", res);
 	return 0;
 }

@@ -1279,8 +1279,8 @@ struct pid_info
 	long    age;
 	long*   children;
 	long	parent_pid;
-	const char*	root;
-	const char*	pwd;
+	char*	root;
+	char*	pwd;
 };
 asmlinkage long sys_get_pid_info(struct pid_info *ret, int pid);
 
