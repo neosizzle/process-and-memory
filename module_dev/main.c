@@ -53,7 +53,8 @@ static struct pid_info *create_pid_info(int pid)
 	printk("stack %lu, %lu,\n", task->mm->start_code, task->mm->start_stack);
 
 	// age
-    uptime = ktime_divns((ktime_get_boottime() * 1000), NSEC_PER_SEC);
+    // uptime = ktime_divns((ktime_get_boottime() * 1000), NSEC_PER_SEC);
+	uptime = get_uptime();
 	printk("uptime: %d\n", uptime);
 	res->age = uptime - (task->start_time - 100);
 	
