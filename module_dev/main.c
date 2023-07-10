@@ -11,9 +11,6 @@
 #include <linux/timekeeping.h>
 #include <linux/slab.h>
 
-#include <linux/fs.h>
-#include <linux/path.h>
-
 struct pid_info
 {
 	long     pid;
@@ -33,6 +30,15 @@ static long get_uptime(void)
 	return uptime.tv_sec;
 }
 
+static void walk_to_root(struct dentry *entry)
+{
+	while (entry)
+	{
+		printk("[DENTRY] %s\n", dentry->d_name.name);
+		entry = entry->parent;
+	}
+}
+
 static struct pid_info *create_pid_info(int pid)
 {
 	struct pid_info *res;
@@ -48,10 +54,8 @@ static struct pid_info *create_pid_info(int pid)
 	res->process_stack = task->mm->start_stack;
 	res->parent_pid = task->real_parent->pid;
 	res->root = task->fs->root.dentry->d_name.name;
-
-	struct path root;
-	get_fs_root(task->fs, &root);
-	res->pwd = root.dentry->d_name.name;
+	res->pwd = task->fs->pwd.dentry->d_name.name;
+	walk_to_root(task->fs->pwd.dentry);
 
 	// age
 	res->age = get_uptime() - ((task->real_start_time / 10000000) / (HZ / 10));
