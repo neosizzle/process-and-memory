@@ -11,7 +11,8 @@
 #include <linux/timekeeping.h>
 #include <linux/slab.h>
 
-#include <linux/ktime.h>
+#include <linux/fs.h>
+#include <linux/path.h>
 
 struct pid_info
 {
@@ -36,7 +37,6 @@ static struct pid_info *create_pid_info(int pid)
 {
 	struct pid_info *res;
 	struct task_struct *task = pid_task(find_get_pid(pid), PIDTYPE_PID);
-	s64  uptime;
 	struct task_struct *child_task;
 	int children_length;
 	int i;
@@ -48,10 +48,12 @@ static struct pid_info *create_pid_info(int pid)
 	res->process_stack = task->mm->start_stack;
 	res->parent_pid = task->real_parent->pid;
 	res->root = task->fs->root.dentry->d_name.name;
-	res->pwd = task->fs->pwd.dentry->d_name.name;
+
+	struct path root;
+	get_fs_root(task->fs, &root);
+	res->pwd = root.dentry->d_name.name;
 
 	// age
-    // uptime = ktime_divns((ktime_get_boottime() * 1000), NSEC_PER_SEC);
 	res->age = get_uptime() - ((task->real_start_time / 10000000) / (HZ / 10));
 	
 	// children
