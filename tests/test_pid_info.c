@@ -67,8 +67,13 @@ void read_from_syscall(long pid, int interate_parent_and_children)
 	// 	pidinfo->pwd
 	// );
 
-	printf("pid_str, %ld\n",
-		pidinfo->pid
+	printf("pid_str, %ld\nstate_str, %ld\nppid, %ld\nage, %ld\nroot, %s\ncwd, %s\n",
+		pidinfo->pid,
+		pidinfo->state,
+		pidinfo->parent_pid,
+		pidinfo->age,
+		pidinfo->root,
+		pidinfo->pwd
 	);
 	
 
