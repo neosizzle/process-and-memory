@@ -53,7 +53,7 @@ char	*ft_strdup(char *src)
 static void walk_to_root(struct dentry *entry)
 {
 	int walk = 0;
-	char *res = kmalloc(2, GFP_KERNEL);
+	char *temp = kmalloc(2, GFP_KERNEL);
 	temp[0] = '/';
 	temp[1] = 0;
 
