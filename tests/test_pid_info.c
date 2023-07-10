@@ -57,25 +57,15 @@ void read_from_syscall(long pid, int interate_parent_and_children)
 	if (syscall_ret < 0)
 		printf("open error diu %s\n", strerror(errno));
 
-	// printf("pid_str, %ld\nstate_str, %s\nppid, %ld\nage, %ld\nstack, %ld\nroot, %s\ncwd, %s\n",
-	// 	pidinfo->pid,
-	// 	pidinfo->state,
-	// 	pidinfo->parent_pid,
-	// 	pidinfo->age,
-	// 	pidinfo->process_stack,
-	// 	pidinfo->root,
-	// 	pidinfo->pwd
-	// );
-
-	printf("pid_str, %ld\nstate_str, %ld\nppid, %ld\nage, %ld\nroot, %s\ncwd, %s\n",
+	printf("pid_str, %ld\nstate_str, %ld\nppid, %ld\nage, %ld\nstack, %ld\nroot, %s\ncwd, %s\n",
 		pidinfo->pid,
 		pidinfo->state,
 		pidinfo->parent_pid,
 		pidinfo->age,
+		pidinfo->process_stack,
 		pidinfo->root,
 		pidinfo->pwd
 	);
-	
 
 	// todo implement children iteration
 }
