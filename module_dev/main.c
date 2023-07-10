@@ -53,7 +53,7 @@ static struct pid_info *create_pid_info(int pid)
 	// age
     // uptime = ktime_divns((ktime_get_boottime() * 1000), NSEC_PER_SEC);
 	uptime = get_uptime();
-	printk("[DEBUG] uptime %d, age %ld, hz %ld\n", get_uptime(), task->start_time, HZ);
+	printk("[DEBUG] uptime %d, age %ld, hz %ld\n", get_uptime(), task->start_time, HZ / 10);
 	res->age = uptime - (task->real_start_time / (HZ / 10));
 	
 	// children
@@ -81,14 +81,14 @@ static struct pid_info *create_pid_info(int pid)
 int init_module(void)
 {
 	printk("currpid %d\n\n", 1);
-	struct pid_info * pidinfo = create_pid_info(1);
-	printk("pid_str, %d\nstate_str, %d\nppid, %d\nage, %ld\nstack, %ld\n",
-	pidinfo->pid,
-	pidinfo->state,
-	pidinfo->parent_pid,
-	pidinfo->age,
-	pidinfo->process_stack
-	);
+	struct pid_info * pidinfo = create_pid_info(48);
+	// printk("pid_str, %d\nstate_str, %d\nppid, %d\nage, %ld\nstack, %ld\n",
+	// pidinfo->pid,
+	// pidinfo->state,
+	// pidinfo->parent_pid,
+	// pidinfo->age,
+	// pidinfo->process_stack
+	// );
 	return 0;
 }
 
