@@ -45,6 +45,17 @@ long get_uptime() {
     return (long)uptime;
 }
 
+void read_from_syscall(long pid, int interate_parent_and_children)
+{
+	struct pid_info* pidinfo = (struct pid_info*) malloc(sizeof(struct pid_info));
+	pidinfo->pid =  0;
+	pidinfo->root = ft_calloc(1024, 1);
+	pidinfo->pwd = ft_calloc(1024, 1);
+	pidinfo->children = ft_calloc(1024, sizeof(long));
+
+	long int amma = syscall(333, pidinfo, 1);
+}
+
 void read_from_vfs(long pid, int iterate_parent_and_children)
 {
 	// read from /proc/pid stat
@@ -159,14 +170,9 @@ int main(int argc)
 	printf("\n======USERSPACE======\n");
 	read_from_vfs(pid, iterate_parent_and_children);
 
-	struct pid_info* pidinfo = (struct pid_info*) malloc(sizeof(struct pid_info));
-	pidinfo->pid =  0;
-	pidinfo->root = ft_calloc(1024, 1);
-	pidinfo->pwd = ft_calloc(1024, 1);
 
-	long int amma = syscall(333, pidinfo, 1);
 	printf("\n======KERNELSPACE======\n");
-	printf("pid: %ld\nroot: %s\n", pidinfo->pid, pidinfo->root);
+	read_from_syscall(pid, iterate_parent_and_children);
 
 	// printf("System call test0 returned %ld\n", amma);
 	// if (amma == -1)
