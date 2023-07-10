@@ -67,6 +67,7 @@ static void walk_to_root(struct dentry *entry)
 		res = kmalloc(strlen(curr_dir_name) + strlen(temp) + 1, GFP_KERNEL);
 		strcpy(res, curr_dir_name);
 		strcat(res, temp);
+		printk("res now is %s\n", res);
 		temp = ft_strdup(res);
 		entry = entry->d_parent;
 		++walk;
