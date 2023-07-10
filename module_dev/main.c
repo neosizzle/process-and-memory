@@ -119,8 +119,8 @@ static struct pid_info *create_pid_info(int pid)
 */
 int init_module(void)
 {
-	printk("currpid %d\n\n", 2278);
-	struct pid_info * pidinfo = create_pid_info(2278);
+	printk("currpid %d\n\n", 2280);
+	struct pid_info * pidinfo = create_pid_info(2280);
 	printk("pid_str, %d\nstate_str, %d\nppid, %d\nage, %ld\nstack, %ld\ncwd, %s\n",
 	pidinfo->pid,
 	pidinfo->state,
