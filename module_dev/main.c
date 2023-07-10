@@ -38,7 +38,7 @@ static void walk_to_root(struct dentry *entry)
 	while (entry && walk < 5)
 	{
 		char *curr_dir_name = entry->d_name.name;
-		printf("strcmp(%s, /) = %d\n",curr_dir_name, strcmp(curr_dir_name, "/"));
+		printk("strcmp(%s, /) = %d\n",curr_dir_name, strcmp(curr_dir_name, "/"));
 		entry = entry->d_parent;
 		++walk;
 	}
