@@ -42,7 +42,7 @@ long get_uptime() {
     fscanf(file, "%lf", &uptime);
     fclose(file);
     
-	printf("uptime %d\n", uptime);
+	printf("uptime %ld\n", (long)uptime);
     return (long)uptime;
 }
 
