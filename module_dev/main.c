@@ -67,14 +67,7 @@ static void walk_to_root(struct dentry *entry)
 		// printk("strcmp(%s, /) = %d\n",curr_dir_name, strcmp(curr_dir_name, "/"));
 		if (strcmp(curr_dir_name, "/") == 0)
 			break;
-		test = ft_strdup(curr_dir_name);
-		strcat(curr_dir_name, temp);
-		strcat(res, temp);
-
-		kfree(temp);
-		temp[0] = '/';
-		temp[1] = 0;
-
+		strcat(res, curr_dir_name);
 		entry = entry->d_parent;
 		++walk;
 	}
