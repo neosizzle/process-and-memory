@@ -40,7 +40,7 @@ char	*ft_strdup(const char *s1)
 	s1_len = 0;
 	while (s1[s1_len])
 		s1_len++;
-	if (!(dest = (char *)malloc(sizeof(char) * (s1_len + 1))))
+	if (!(dest = (char *)kmalloc(sizeof(char) * (s1_len + 1), GFP_KERNEL)))
 		return (NULL);
 	i = 0;
 	while (i < s1_len)
