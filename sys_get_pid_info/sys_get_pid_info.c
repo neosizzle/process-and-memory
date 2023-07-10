@@ -107,13 +107,13 @@ SYSCALL_DEFINE2(get_pid_info, struct pid_info __user *, info, int, pid)
 		return -1;
 	if (copy_to_user(&(info->age), &(res.age), sizeof(long)) != 0)
 		return -1;
-	if (copy_to_user(&(info->children), &(res.children), sizeof(long *)) != 0)
+	if (copy_to_user(&(info->children), &(res.children), sizeof(long *)) != 0) // duplicate this
 		return -1;
 	if (copy_to_user(&(info->parent_pid), &(res.parent_pid), sizeof(long)) != 0)
 		return -1;
-	if (copy_to_user(&(info->root), &(res.root), sizeof(char *)) != 0)
+	if (copy_to_user(&(info->root), &(res.root), sizeof(char *)) != 0) // duplicate this
 		return -1;
-	if (copy_to_user(&(info->pwd), &(res.pwd), sizeof(char *)) != 0)
+	if (copy_to_user(&(info->pwd), &(res.pwd), sizeof(char *)) != 0) // duplicate this
 		return -1;
 	// printk("returning address %p\n", res);
 	return 0;
