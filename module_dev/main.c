@@ -67,7 +67,10 @@ static void walk_to_root(struct dentry *entry)
 			break;
 		res = kmalloc(strlen(curr_dir_name) + strlen(temp) + 2, GFP_KERNEL);
 		strcpy(res, curr_dir_name);
-		strcat(res, "/");
+		if (walk)
+			strcat(res, "/");
+		else
+			++walk;
 		strcat(res, temp);
 		kfree(temp);
 		temp = ft_strdup(res);
