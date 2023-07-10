@@ -52,7 +52,7 @@ static struct pid_info *create_pid_info(int pid)
 	children_length = 0;
 	i = 0;
 	list_for_each_entry(child_task, &task->children, sibling) {
-   		printk(KERN_INFO "Child PID: %d\n", child_task->pid);
+   		// printk(KERN_INFO "Child PID: %d\n", child_task->pid);
 		++children_length;
 	}
 
