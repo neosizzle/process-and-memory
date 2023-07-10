@@ -26,7 +26,7 @@ struct pid_info
 	char*	pwd;
 };
 
-long sys_get_pid_info(struct pid_info *ret, int pid)
+long get_pid_info(struct pid_info *ret, int pid)
 {
 	return syscall(333, ret, pid);
 }
@@ -53,7 +53,20 @@ void read_from_syscall(long pid, int interate_parent_and_children)
 	pidinfo->pwd = ft_calloc(1024, 1);
 	pidinfo->children = ft_calloc(1024, sizeof(long));
 
-	long int amma = syscall(333, pidinfo, 1);
+	long syscall_ret = get_pid_info(pid, pidinfo);
+	if (syscall_ret < 0)
+		printf("open error diu %s\n", strerror(errno));
+
+	printf("pid_str, %ld\nstate_str, %s\nppid, %ld\nage, %ld\nstack, %ld\nroot, %s\ncwd, %s\n",
+		pidinfo->pid,
+		pidinfo->state,
+		pidinfo->parent_pid,
+		pidinfo->age,
+		pidinfo->stack,
+		pidinfo->root,
+		pidinfo->cwd,
+	);
+	// todo implement children iteration
 }
 
 void read_from_vfs(long pid, int iterate_parent_and_children)
