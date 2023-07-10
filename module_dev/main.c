@@ -50,13 +50,11 @@ static struct pid_info *create_pid_info(int pid)
 	res->root = task->fs->root.dentry->d_name.name;
 	res->pwd = task->fs->pwd.dentry->d_name.name;
 
-	printk("stack %lu, %lu,\n", task->mm->start_code, task->mm->start_stack);
-
 	// age
     // uptime = ktime_divns((ktime_get_boottime() * 1000), NSEC_PER_SEC);
 	uptime = get_uptime();
-	printk("[DEBUG] uptime %d, age %ld, hz %ld\n", get_uptime(), task->real_start_time, HZ);
-	res->age = uptime - (task->real_start_time / HZ);
+	printk("[DEBUG] uptime %d, age %ld, hz %ld\n", get_uptime(), task->start_time, HZ);
+	res->age = uptime - (task->real_start_time / (HZ / 10));
 	
 	// children
 	children_length = 0;
