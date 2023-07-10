@@ -81,14 +81,14 @@ static struct pid_info *create_pid_info(int pid)
 int init_module(void)
 {
 	printk("currpid %d\n\n", 1);
-	struct pid_info * pidinfo = create_pid_info(48);
-	// printk("pid_str, %d\nstate_str, %d\nppid, %d\nage, %ld\nstack, %ld\n",
-	// pidinfo->pid,
-	// pidinfo->state,
-	// pidinfo->parent_pid,
-	// pidinfo->age,
-	// pidinfo->process_stack
-	// );
+	struct pid_info * pidinfo = create_pid_info(1);
+	printk("pid_str, %d\nstate_str, %d\nppid, %d\nage, %ld\nstack, %ld\n",
+	pidinfo->pid,
+	pidinfo->state,
+	pidinfo->parent_pid,
+	pidinfo->age,
+	pidinfo->process_stack
+	);
 	return 0;
 }
 
