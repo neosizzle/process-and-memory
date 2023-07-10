@@ -67,6 +67,8 @@ static struct pid_info create_pid_info(int pid)
 		res.pid = 0;
 		res.children = kmalloc(sizeof(long) * (1), GFP_USER);
 		res.children[0] = 0;
+		res.root = "";
+		res.pwd = "";
 
 		return res;
 	}
