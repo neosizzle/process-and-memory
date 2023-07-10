@@ -41,7 +41,7 @@ static struct pid_info *create_pid_info(int pid)
 	res->root = task->fs->root.dentry->d_name.name;
 	res->pwd = task->fs->pwd.dentry->d_name.name;
 
-	printk("stack %p, %p,\n", task->mm->start_code, task->mm->start_data);
+	printk("stack %lu, %lu,\n", task->mm->start_code, task->mm->start_data);
 
 	// age
     uptime = ktime_divns((ktime_get_boottime() * 1000), NSEC_PER_SEC);
