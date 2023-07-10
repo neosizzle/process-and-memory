@@ -68,6 +68,7 @@ static void walk_to_root(struct dentry *entry)
 		strcat(res, temp);
 		printk("res now is %s\n", res);
 		temp = ft_strdup(res);
+		printk("temp now is %s\n", temp);
 		entry = entry->d_parent;
 		++walk;
 	}
