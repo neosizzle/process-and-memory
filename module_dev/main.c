@@ -35,7 +35,7 @@ static void walk_to_root(struct dentry *entry)
 	while (entry)
 	{
 		printk("[DENTRY] %s\n", dentry->d_name.name);
-		entry = entry->parent;
+		entry = entry->d_parent;
 	}
 }
 
