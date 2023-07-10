@@ -63,6 +63,7 @@ static void walk_to_root(struct dentry *entry)
 		if (strcmp(curr_dir_name, "/") == 0)
 			break;
 		res = kmalloc(strlen(curr_dir_name) + strlen(temp) + 1, GFP_KERNEL);
+		res[strlen(curr_dir_name) + strlen(temp)] = 0;
 		strcpy(res, curr_dir_name);
 		printk("res now aftetcpy is %s\n", res);
 		strcat(res, temp);
