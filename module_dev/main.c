@@ -35,7 +35,8 @@ static void walk_to_root(struct dentry *entry)
 {
 	int walk = 0;
 	char *res = kmalloc(1234, GFP_KERNEL);
-	res[0]= 0;
+	res[0] = '';
+	res[1] = 0;
 
 	while (entry)
 	{
