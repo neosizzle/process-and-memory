@@ -3,12 +3,12 @@ INCS = inc
 BUILDDIR=build/
 C_FLAGS = -I${INCS}
 
-NAME_0 = test0
+NAME_0 = test_pid_info
 SRCS_0 = test_pid_info.c
 OBJS_0 = ${SRCS_0:.c=.o}
 
-NAME_1 = test1
-SRCS_1 = main2.c
+NAME_1 = forker
+SRCS_1 = forker.c
 OBJS_1 = ${SRCS_1:.c=.o}
 
 OBJS_TARGET_0=${addprefix ${BUILDDIR},${subst /,_,${OBJS_0}}}

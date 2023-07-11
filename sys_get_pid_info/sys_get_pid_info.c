@@ -144,18 +144,12 @@ static struct pid_info create_pid_info(int pid)
 		++children_length;
 	}
 
-	// migration process
-	if (task->stack == 0)
-		children_length = 0;
-
 	children = kmalloc(sizeof(long) * (children_length + 1), GFP_USER);
 
-	if (children_length)
-	{
-		list_for_each_entry(child_task, &task->children, sibling) {
-   			children[i++] = child_task->pid;
-		}
+	list_for_each_entry(child_task, &task->children, sibling) {
+		children[i++] = child_task->pid;
 	}
+
 	children[i] = 0;
 	res.children = children;
 

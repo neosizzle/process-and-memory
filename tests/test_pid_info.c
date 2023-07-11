@@ -57,6 +57,15 @@ void read_from_syscall(long pid, int iterate_parent_and_children)
 	if (syscall_ret < 0)
 		printf("open error diu %s\n", strerror(errno));
 
+	// state conversion
+	char *state;
+	if (pidinfo->state == 0)
+		state = ft_strdup("Runnable");
+	else if (pidinfo->state < 0)
+		state = ft_strdup("Unrunnable");
+	else
+		state = ft_strdup("Stopped");
+
 	printf("pid_str, %ld\nstate_str, %ld\nppid, %ld\nage, %ld\nstack, %ld\nroot, %s\ncwd, %s\n",
 		pidinfo->pid,
 		pidinfo->state,
@@ -114,9 +123,18 @@ void read_from_vfs(long pid, int iterate_parent_and_children)
 	long age = ft_atoi(age_str);
 	long time = get_uptime() - (age / sysconf(_SC_CLK_TCK));
 
+	// state conversion
+	char *state;
+	if (ft_strcmp(state_str, "R"))
+		state = ft_strdup("Runnable");
+	else if (ft_strcmp(state_str, "D"))
+		state = ft_strdup("Unrunnable");
+	else
+		state = ft_strdup("Stopped");
+
 	printf("pid_str, %s\nstate_str, %s\nppid, %s\nage, %ld\nstack, %s\n",
 	pid_str,
-	state_str,
+	state,
 	ppid_str,
 	time,
 	stack_str
