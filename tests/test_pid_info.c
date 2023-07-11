@@ -68,11 +68,16 @@ void read_from_syscall(long pid, int interate_parent_and_children)
 	);
 
 	// todo implement children iteration
-	printf("children,\n");
-	int child_i = -1;
-	while (pidinfo->children[++child_i])
-		printf("%d\n", pidinfo->children[child_i]);
-	
+	if (iterate_parent_and_children)
+	{
+		printf("\n========PARENT========\n");
+		read_from_syscall(pidinfo->parent_pid, 0);
+
+		printf("\n========CHILDREN========\n");
+		int child_i = -1;
+		while (pidinfo->children[++child_i])
+			printf("%d\n", pidinfo->children[child_i]);
+	}	
 }
 
 void read_from_vfs(long pid, int iterate_parent_and_children)
