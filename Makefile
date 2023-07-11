@@ -14,6 +14,8 @@ all :
 	@cp -R sys_get_pid_info /usr/src/linux-$(KERNEL_VER)/
 	@echo "📇  Copying sources sys_ft_kill/.."
 	@cp -R sys_ft_kill /usr/src/linux-$(KERNEL_VER)/
+	@echo "📇  Copying sources sys_ft_wait/.."
+	@cp -R sys_ft_wait /usr/src/linux-$(KERNEL_VER)/
 	@echo "📇  Copying syscall_64.tbl.."
 	@cp syscall_64.tbl /usr/src/linux-$(KERNEL_VER)/arch/x86/entry/syscalls/syscall_64.tbl
 	@echo "📇  Copying syscalls.h.."

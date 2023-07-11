@@ -1285,5 +1285,6 @@ struct pid_info
 asmlinkage long sys_get_pid_info(struct pid_info *ret, int pid);
 
 asmlinkage long sys_ft_kill(long pid, int sig);
+asmlinkage long sys_ft_wait(int *status);
 
 #endif

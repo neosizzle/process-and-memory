@@ -343,6 +343,7 @@
 332     common  statx                   __x64_sys_statx
 333     common  get_pid_info         	__x64_sys_get_pid_info
 343     common  ft_kill					__x64_sys_ft_kill
+353     common  ft_wait					__x64_sys_ft_wait
 
 #
 # x32-specific system call numbers start at 512 to avoid cache impact

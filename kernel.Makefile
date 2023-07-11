@@ -978,7 +978,7 @@ endif
 
 
 ifeq ($(KBUILD_EXTMOD),)
-core-y		+= kernel/ certs/ mm/ fs/ ipc/ security/ crypto/ block/ sys_get_pid_info/ sys_ft_kill/
+core-y		+= kernel/ certs/ mm/ fs/ ipc/ security/ crypto/ block/ sys_get_pid_info/ sys_ft_kill/ sys_ft_wait/
 
 vmlinux-dirs	:= $(patsubst %/,%,$(filter %/, $(init-y) $(init-m) \
 		     $(core-y) $(core-m) $(drivers-y) $(drivers-m) \

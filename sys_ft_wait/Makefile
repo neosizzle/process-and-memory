@@ -1,0 +1,1 @@
+obj-y:=sys_ft_wait.o
