@@ -66,7 +66,7 @@ void read_from_syscall(long pid, int iterate_parent_and_children)
 	else
 		state = ft_strdup("Stopped");
 
-	printf("pid_str, %ld\nstate_str, %ld\nppid, %ld\nage, %ld\nstack, %ld\nroot, %s\ncwd, %s\n",
+	printf("pid_str, %ld\nstate_str, %s\nppid, %ld\nage, %ld\nstack, %ld\nroot, %s\ncwd, %s\n",
 		pidinfo->pid,
 		state,
 		pidinfo->parent_pid,
