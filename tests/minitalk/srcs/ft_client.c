@@ -1,6 +1,6 @@
 #include "minitalk.h"
 
-static ft_kill(int pid, int sig)
+static int ft_kill(int pid, int sig)
 {
 	return syscall(343, pid, sig);
 }
