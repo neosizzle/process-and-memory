@@ -76,6 +76,14 @@ void read_from_syscall(long pid, int iterate_parent_and_children)
 		pidinfo->pwd
 	);
 
+	// print children
+	printf("children,\n");
+	int child_i = -1;
+	while (pidinfo->children[++child_i])
+	{
+		printf("%ld\n",pidinfo->children[child_i]);
+	}
+
 	// todo implement children iteration
 	if (iterate_parent_and_children)
 	{

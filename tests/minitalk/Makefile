@@ -6,7 +6,7 @@ CLIENT_BONUS=client_bonus
 SERVER_BONUS=server_bonus
 CLIENT_BONUS_SRCS= srcs/ft_client_bonus.c
 SERVER_BONUS_SRCS= srcs/ft_server_bonus.c
-LIBFT= libft/*.c
+LIBFT= libft/libft.a
 GCC=gcc -Wall -Werror -Wextra -I .
 
 all:${CLIENT} ${SERVER}
