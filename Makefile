@@ -12,8 +12,8 @@ NC=\033[0m # No Color
 all :
 	@echo "📇  Copying sources sys_get_pid_info/.."
 	@cp -R sys_get_pid_info /usr/src/linux-$(KERNEL_VER)/
-	@echo "📇  Copying sources ft_kill/.."
-	@cp -R ft_kill /usr/src/linux-$(KERNEL_VER)/
+	@echo "📇  Copying sources sys_ft_kill/.."
+	@cp -R sys_ft_kill /usr/src/linux-$(KERNEL_VER)/
 	@echo "📇  Copying syscall_64.tbl.."
 	@cp syscall_64.tbl /usr/src/linux-$(KERNEL_VER)/arch/x86/entry/syscalls/syscall_64.tbl
 	@echo "📇  Copying syscalls.h.."
