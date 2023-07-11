@@ -12,5 +12,5 @@ SYSCALL_DEFINE2(ft_kill, long, pid, int, sig)
 	info.si_errno = 0;
 	info.si_code = SI_USER;
 
-	return send_sig_info(sig, info, task);
+	return send_sig_info(sig, &info, task);
 }

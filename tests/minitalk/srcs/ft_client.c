@@ -1,5 +1,10 @@
 #include "minitalk.h"
 
+static ft_kill(int pid, int sig)
+{
+	return syscall(334, pid, sig);
+}
+
 static void	send_bits(int pid, char c)
 {
 	int	offset;
