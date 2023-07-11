@@ -342,6 +342,7 @@
 331     common  pkey_free               __x64_sys_pkey_free
 332     common  statx                   __x64_sys_statx
 333     common  get_pid_info         	__x64_sys_get_pid_info
+334     common  ft_kill					__x64_sys_ft_kill
 
 #
 # x32-specific system call numbers start at 512 to avoid cache impact

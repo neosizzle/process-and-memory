@@ -55,7 +55,13 @@ void read_from_syscall(long pid, int iterate_parent_and_children)
 
 	long syscall_ret = get_pid_info(pidinfo, pid);
 	if (syscall_ret < 0)
-		printf("open error diu %s\n", strerror(errno));
+		printf("syscall error diu %s\n", strerror(errno));
+
+	if (!pidinfo->pid)
+	{
+		printf("No process found\n");
+		return;
+	}
 
 	// state conversion
 	char *state;
@@ -111,6 +117,8 @@ void read_from_vfs(long pid, int iterate_parent_and_children)
 	if (fd < 0)
 	{
 		printf("open error diu %s\n", strerror(errno));
+		if (errno == ENOENT)
+			printf("No process found\n");
 		free(stat_str);
 		free(path);
 		return ;
