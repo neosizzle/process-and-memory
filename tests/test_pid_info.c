@@ -45,7 +45,7 @@ long get_uptime() {
     return (long)uptime;
 }
 
-void read_from_syscall(long pid, int interate_parent_and_children)
+void read_from_syscall(long pid, int iterate_parent_and_children)
 {
 	struct pid_info* pidinfo = (struct pid_info*) malloc(sizeof(struct pid_info));
 	pidinfo->pid =  0;
