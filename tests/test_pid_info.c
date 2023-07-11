@@ -68,7 +68,7 @@ void read_from_syscall(long pid, int iterate_parent_and_children)
 
 	printf("pid_str, %ld\nstate_str, %ld\nppid, %ld\nage, %ld\nstack, %ld\nroot, %s\ncwd, %s\n",
 		pidinfo->pid,
-		pidinfo->state,
+		state,
 		pidinfo->parent_pid,
 		pidinfo->age,
 		pidinfo->process_stack,
@@ -219,11 +219,15 @@ int main(int argc)
 	scanf("%ld", &pid);
 
 	printf("PID entered is %ld\n", pid);
+	printf("\n=====================\n");
 	printf("\n======USERSPACE======\n");
+	printf("\n=====================\n");
 	read_from_vfs(pid, iterate_parent_and_children);
 
 
+	printf("\n=======================\n");
 	printf("\n======KERNELSPACE======\n");
+	printf("\n=======================\n");
 	read_from_syscall(pid, iterate_parent_and_children);
 
 	// printf("System call test0 returned %ld\n", amma);
