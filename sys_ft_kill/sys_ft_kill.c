@@ -16,6 +16,7 @@
 #include <linux/slab.h>
 #include <linux/syscalls.h>
 #include <linux/string.h>
+#include <asm/siginfo.h>
 
 SYSCALL_DEFINE2(ft_kill, long, pid, int, sig)
 {
