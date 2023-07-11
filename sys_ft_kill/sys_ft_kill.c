@@ -1,5 +1,4 @@
 #include <linux/sched/signal.h>
-#include <uapi/asm-generic/siginfo.h>
 #include <linux/sched.h>
 #include <linux/syscalls.h>
 
