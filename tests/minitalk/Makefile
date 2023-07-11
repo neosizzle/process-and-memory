@@ -3,7 +3,7 @@ SERVER=server
 CLIENT_SRCS= srcs/ft_client.c
 SERVER_SRCS= srcs/ft_server.c
 LIBFT= libft/libft.a
-GCC=gcc -Wall -Werror -Wextra -I .
+GCC=gcc  -I .
 
 all:${CLIENT} ${SERVER}
 
