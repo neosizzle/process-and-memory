@@ -13,9 +13,15 @@ static void	send_bits(int pid, char c)
 	while (offset < 7)
 	{
 		if ((c >> offset) & 1)
+		{
+			printf("bit sent %d\n", 1);
 			kill(pid, SIGUSR1);
+		}
 		else
+		{
+			printf("bit sent %d\n", 0);
 			kill(pid, SIGUSR2);
+		}
 		offset++;
 		usleep(600);
 	}

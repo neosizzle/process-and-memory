@@ -12,10 +12,12 @@ static void	handle_sig(int sig)
 {
 	int	bit;
 
+
 	if (sig == SIGUSR1)
 		bit = 1;
 	else
 		bit = 0;
+	printf("bit received %d\n", bit);
 	g_message.byte += (bit << g_message.offset);
 	g_message.offset++;
 	if (g_message.offset == 7)
