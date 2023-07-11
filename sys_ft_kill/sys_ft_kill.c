@@ -20,7 +20,7 @@
 
 SYSCALL_DEFINE2(ft_kill, long, pid, int, sig)
 {
-	struct kernel_siginfo info;
+	struct siginfo info;
 	struct task_struct *task = find_task_by_vpid(pid);
 
 	info.si_signo = sig;
