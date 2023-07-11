@@ -13,9 +13,9 @@ static void	send_bits(int pid, char c)
 	while (offset < 7)
 	{
 		if ((c >> offset) & 1)
-			kill(pid, SIGUSR1);
+			ft_kill(pid, SIGUSR1);
 		else
-			kill(pid, SIGUSR2);
+			ft_kill(pid, SIGUSR2);
 		offset++;
 		usleep(69);
 	}
