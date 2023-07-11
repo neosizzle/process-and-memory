@@ -5,6 +5,7 @@
 
 SYSCALL_DEFINE2(ft_kill, long, pid, int, sig)
 {
+	printk("ft_kill\n");
 	struct siginfo info;
 	struct task_struct *task = find_task_by_vpid(pid);
 
