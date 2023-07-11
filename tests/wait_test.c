@@ -6,7 +6,7 @@ int main(int argc, char const *argv[])
 {
 	int gay;
 
-	printf("syscall begin\n");
+	printf("syscall begin pid %d\n", getpid());
 	syscall(353, &gay);
 	printf("syscall over\n");
 	return 0;
