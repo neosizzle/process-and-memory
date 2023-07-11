@@ -76,7 +76,7 @@ void read_from_syscall(long pid, int iterate_parent_and_children)
 		int child_i = -1;
 		while (pidinfo->children[++child_i])
 		{
-			printf("\n========CHILDREN========\n");
+			printf("\n========CHILD========\n");
 			read_from_syscall(pidinfo->children[child_i], 0);
 		}
 	}	
