@@ -73,10 +73,12 @@ void read_from_syscall(long pid, int iterate_parent_and_children)
 		printf("\n========PARENT========\n");
 		read_from_syscall(pidinfo->parent_pid, 0);
 
-		printf("\n========CHILDREN========\n");
 		int child_i = -1;
 		while (pidinfo->children[++child_i])
-			printf("%d\n", pidinfo->children[child_i]);
+		{
+			printf("\n========CHILDREN========\n");
+			read_from_syscall(pidinfo->children[child_i], 0);
+		}
 	}	
 }
 
@@ -111,7 +113,6 @@ void read_from_vfs(long pid, int iterate_parent_and_children)
 	// age math
 	long age = ft_atoi(age_str);
 	long time = get_uptime() - (age / sysconf(_SC_CLK_TCK));
-	printf("[DEBUG] uptime %d, age %ld, hz %ld\n", get_uptime(), age, sysconf(_SC_CLK_TCK));
 
 	printf("pid_str, %s\nstate_str, %s\nppid, %s\nage, %ld\nstack, %s\n",
 	pid_str,
