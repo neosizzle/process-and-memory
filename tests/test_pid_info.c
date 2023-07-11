@@ -134,11 +134,11 @@ void read_from_vfs(long pid, int iterate_parent_and_children)
 	// state conversion
 	char *state;
 	if (ft_strcmp(state_str, "R"))
-		state = ft_strdup("Runnable");
-	else if (ft_strcmp(state_str, "D"))
-		state = ft_strdup("Unrunnable");
-	else
 		state = ft_strdup("Stopped");
+	else if (ft_strcmp(state_str, "D"))
+		state = ft_strdup("Runnable");
+	else
+		state = ft_strdup("Unrunnable");
 
 	printf("pid_str, %s\nstate_str, %s\nppid, %s\nage, %ld\nstack, %s\n",
 	pid_str,
