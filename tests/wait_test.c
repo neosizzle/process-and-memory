@@ -7,13 +7,14 @@ int main(int argc, char const *argv[])
 {
 	int gay;
 
+	int ppid = getpid();
 	int pid = fork();
 
 	if (!pid)
 	{
 		// while (1){}
 		printf("Child\n");
-		exit(0);
+		kill(ppid, SIGCHLD);
 	}
 	else
 	{
