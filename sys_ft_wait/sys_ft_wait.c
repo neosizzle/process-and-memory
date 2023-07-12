@@ -1,6 +1,7 @@
 #include <linux/linkage.h>
 #include <linux/syscalls.h>
 #include <linux/sched.h>
+#include <linux/sched/signal.h>
 #include <linux/wait.h>
 #include <linux/list.h>
 
