@@ -32,13 +32,14 @@ SYSCALL_DEFINE1(ft_wait, int __user *, status)
 
 
 
+	struct task_struct *child_task;
+	int child_state = 0;
+	
 	// set current state to sleep
 	current->state = TASK_INTERRUPTIBLE;
 
 	// start loop
-	struct task_struct *child_task;
-
-	while (1)
+	while (!child_state)
 	{
 		// iterate children to check if any of them return (change state to exit zombie)
 		list_for_each_entry(child_task, &current->children, sibling) {
@@ -51,7 +52,10 @@ SYSCALL_DEFINE1(ft_wait, int __user *, status)
 
 			// if one of them dies, change child state to exit dead and return status code
 			if (child_task->state > 0)
-				break ;
+			{
+				child_state = child_task->state;
+				copy_to_user(&status, &(child_task->exit_code), sizeof(int));
+			}
 		}
 
 		// Check if a signal is pending
@@ -60,8 +64,6 @@ SYSCALL_DEFINE1(ft_wait, int __user *, status)
 			return -EINTR;
 		}
 
-	}
-	
-	printk("queue return, kernel pid %d\n", current->pid);
+	}	
 	return 0;
 }
