@@ -54,7 +54,7 @@ SYSCALL_DEFINE1(ft_wait, int __user *, status)
 			if (child_task->state > 0)
 			{
 				child_state = child_task->state;
-				copy_to_user(&status, &(child_task->exit_code), sizeof(int));
+				copy_to_user(status, &(child_task->exit_code), sizeof(int));
 			}
 		}
 

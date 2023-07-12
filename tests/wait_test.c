@@ -19,7 +19,7 @@ int main(int argc, char const *argv[])
 	{
 		printf("syscall begin pid %d\n", getpid());
 		syscall(353, &gay);
-		printf("syscall over\n");
+		printf("syscall over status %d\n". gay);
 	}
 	return 0;
 }
