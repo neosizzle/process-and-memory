@@ -13,7 +13,7 @@ int main(int argc, char const *argv[])
 	{
 		// while (1){}
 		printf("Child\n");
-		exit(1);
+		exit(0);
 	}
 	else
 	{
