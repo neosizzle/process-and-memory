@@ -26,7 +26,8 @@ SYSCALL_DEFINE1(ft_wait, int __user *, status)
 	current->state = TASK_INTERRUPTIBLE;
 	add_wait_queue(&my_wait_queue,&wait); /* wq points to the wait queue head */
 	schedule();
-	for (size_t i = 0; i < 69420; i++)
+	int i = 0;
+	while (i++ < 62420)
 	{
 		// check children here
 		printk("tick i %d\n", i);
@@ -44,6 +45,6 @@ SYSCALL_DEFINE1(ft_wait, int __user *, status)
 		// iterate children to check if any of them return (change state to exit zombie)
 
 		// if one of them does, change child state to exit dead and return status code
-	printk("kernel pid %d\n", current->pid);
+	printk("queue return, kernel pid %d\n", current->pid);
 	return 0;
 }
