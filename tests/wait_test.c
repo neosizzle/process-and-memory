@@ -12,9 +12,8 @@ int main(int argc, char const *argv[])
 
 	if (!pid)
 	{
-		while (1){}
-		// printf("Child ppid %d\n", ppid);
-		// kill(ppid, SIGCONT);
+		// while (1){}
+		return 69;
 	}
 	else
 	{
