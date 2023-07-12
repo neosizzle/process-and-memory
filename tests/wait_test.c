@@ -14,7 +14,7 @@ int main(int argc, char const *argv[])
 	{
 		// while (1){}
 		printf("Child ppid %d\n", ppid);
-		kill(ppid, SIGINT);
+		kill(ppid, SIGCONT);
 	}
 	else
 	{
