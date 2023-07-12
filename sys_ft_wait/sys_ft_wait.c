@@ -18,7 +18,7 @@ SYSCALL_DEFINE1(ft_wait, int __user *, status)
 	current->state = TASK_INTERRUPTIBLE;
 	add_wait_queue(&my_wait_queue,&wait); /* wq points to the wait queue head */
 	schedule();
-	remove_wait_queue(my_wait_queue, &wait);
+	remove_wait_queue(&my_wait_queue, &wait);
 
 
 
