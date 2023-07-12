@@ -2,6 +2,7 @@
 #include <linux/syscalls.h>
 #include <linux/sched.h>
 #include <linux/wait.h>
+#include <linux/list.h>
 
 int condition_check(void)
 {
@@ -39,7 +40,7 @@ SYSCALL_DEFINE1(ft_wait, int __user *, status)
 		// check if current state changed
 
 		// iterate children to check if any of them return (change state to exit zombie)
-		list_for_each_entry(child_task, &task->children, sibling) {
+		list_for_each_entry(child_task, &current->children, sibling) {
 			printk("child status %d, exit_state %d, exit_code %d, exit_signal %d\n",
 			child_task->state,
 			child_task->exit_state,
