@@ -13,7 +13,7 @@ int main(int argc, char const *argv[])
 	if (!pid)
 	{
 		// while (1){}
-		return 69;
+		exit(69);
 	}
 	else
 	{
