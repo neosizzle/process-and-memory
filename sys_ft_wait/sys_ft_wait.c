@@ -28,6 +28,7 @@ SYSCALL_DEFINE1(ft_wait, int __user *, status)
 	schedule();
 	for (size_t i = 0; i < 69420; i++)
 	{
+		// check children here
 		printk("tick i %d\n", i);
 	}
 	wake_up(&my_wait_queue);
