@@ -8,7 +8,7 @@ SYSCALL_DEFINE1(ft_wait, int __user *, status)
 	// testing stuff
 	// current->state = TASK_INTERRUPTIBLE;
 
-	// DECLARE_WAIT_QUEUE_HEAD(my_wait_queue);
+	DECLARE_WAIT_QUEUE_HEAD(my_wait_queue);
 	// wait_event(my_wait_queue, 0);
 	// printk("wait_event return\n");
 	// schedule();
@@ -16,9 +16,9 @@ SYSCALL_DEFINE1(ft_wait, int __user *, status)
 	wait_queue_t wait;
 	init_waitqueue_entry(&wait, current);
 	current->state = TASK_INTERRUPTIBLE;
-	add_wait_queue(wq,&wait); /* wq points to the wait queue head */
+	add_wait_queue(my_wait_queue,&wait); /* wq points to the wait queue head */
 	schedule();
-	remove_wait_queue(wq, &wait);
+	remove_wait_queue(my_wait_queue, &wait);
 
 
 
