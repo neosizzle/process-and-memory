@@ -3,22 +3,28 @@
 #include <linux/sched.h>
 #include <linux/wait.h>
 
+int condition_check()
+{
+	printk("condition checked\n");
+	return 0;
+}
+
 SYSCALL_DEFINE1(ft_wait, int __user *, status)
 {
 	// testing stuff
 	// current->state = TASK_INTERRUPTIBLE;
 
 	DECLARE_WAIT_QUEUE_HEAD(my_wait_queue);
-	// wait_event(my_wait_queue, 0);
-	// printk("wait_event return\n");
+	wait_event(my_wait_queue, condition_check());
+	printk("wait_event return\n");
 	// schedule();
 
-	struct wait_queue_entry wait;
-	init_waitqueue_entry(&wait, current);
-	current->state = TASK_INTERRUPTIBLE;
-	add_wait_queue(&my_wait_queue,&wait); /* wq points to the wait queue head */
-	schedule();
-	remove_wait_queue(&my_wait_queue, &wait);
+	// struct wait_queue_entry wait;
+	// init_waitqueue_entry(&wait, current);
+	// current->state = TASK_INTERRUPTIBLE;
+	// add_wait_queue(&my_wait_queue,&wait); /* wq points to the wait queue head */
+	// schedule();
+	// remove_wait_queue(&my_wait_queue, &wait);
 
 
 
