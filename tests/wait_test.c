@@ -13,8 +13,8 @@ int main(int argc, char const *argv[])
 	if (!pid)
 	{
 		// while (1){}
-		printf("Child\n");
-		kill(ppid, SIGCHLD);
+		printf("Child ppid %d\n", ppid);
+		kill(ppid, SIGINT);
 	}
 	else
 	{
