@@ -15,16 +15,23 @@ SYSCALL_DEFINE1(ft_wait, int __user *, status)
 	// current->state = TASK_INTERRUPTIBLE;
 
 	DECLARE_WAIT_QUEUE_HEAD(my_wait_queue);
-	wait_event_interruptible(my_wait_queue, condition_check());
-	printk("wait_event return\n");
+
+
+	// wait_event_interruptible(my_wait_queue, condition_check());
+	// printk("wait_event return\n");
 	// schedule();
 
-	// struct wait_queue_entry wait;
-	// init_waitqueue_entry(&wait, current);
-	// current->state = TASK_INTERRUPTIBLE;
-	// add_wait_queue(&my_wait_queue,&wait); /* wq points to the wait queue head */
-	// schedule();
-	// remove_wait_queue(&my_wait_queue, &wait);
+	struct wait_queue_entry wait;
+	init_waitqueue_entry(&wait, current);
+	current->state = TASK_INTERRUPTIBLE;
+	add_wait_queue(&my_wait_queue,&wait); /* wq points to the wait queue head */
+	schedule();
+	for (size_t i = 0; i < 69420; i++)
+	{
+		printk("tick i %d\n", i);
+	}
+	wake_up(&my_wait_queue);
+	remove_wait_queue(&my_wait_queue, &wait);
 
 
 
