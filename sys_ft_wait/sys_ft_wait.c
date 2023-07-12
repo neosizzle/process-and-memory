@@ -1,5 +1,6 @@
 #include <linux/linkage.h>
 #include <linux/syscalls.h>
+#include <linux/sched.h>
 
 SYSCALL_DEFINE1(ft_wait, int __user *, status)
 {
