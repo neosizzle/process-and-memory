@@ -3,7 +3,7 @@
 #include <linux/sched.h>
 #include <linux/wait.h>
 
-int condition_check()
+int condition_check(void)
 {
 	printk("condition checked\n");
 	return 0;
