@@ -15,7 +15,7 @@ SYSCALL_DEFINE1(ft_wait, int __user *, status)
 	// current->state = TASK_INTERRUPTIBLE;
 
 	DECLARE_WAIT_QUEUE_HEAD(my_wait_queue);
-	wait_event(my_wait_queue, condition_check());
+	wait_event_interruptible(my_wait_queue, condition_check());
 	printk("wait_event return\n");
 	// schedule();
 
