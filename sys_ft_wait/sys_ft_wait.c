@@ -36,14 +36,10 @@ SYSCALL_DEFINE1(ft_wait, int __user *, status)
 	current->state = TASK_INTERRUPTIBLE;
 
 	// start loop
+	struct task_struct *child_task;
+
 	while (1)
 	{
-		// Check if a signal is pending
-		if (signal_pending(current)) {
-			// Handle the signal interruption
-			return -EINTR;
-		}
-
 		// iterate children to check if any of them return (change state to exit zombie)
 		list_for_each_entry(child_task, &current->children, sibling) {
 			printk("child status %d, exit_state %d, exit_code %d, exit_signal %d\n",
@@ -56,6 +52,12 @@ SYSCALL_DEFINE1(ft_wait, int __user *, status)
 			// if one of them dies, change child state to exit dead and return status code
 			if (child_task->state > 0)
 				break ;
+		}
+
+		// Check if a signal is pending
+		if (signal_pending(current)) {
+			// Handle the signal interruption
+			return -EINTR;
 		}
 
 	}
