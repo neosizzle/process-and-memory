@@ -37,7 +37,11 @@ SYSCALL_DEFINE1(ft_wait, int __user *, status)
 	// start loop
 	while (1)
 	{
-		// check if current state changed
+		// Check if a signal is pending
+		if (signal_pending(current)) {
+			// Handle the signal interruption
+			return -EINTR;
+		}
 
 		// iterate children to check if any of them return (change state to exit zombie)
 		list_for_each_entry(child_task, &current->children, sibling) {
