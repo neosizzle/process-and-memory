@@ -10,7 +10,7 @@ SYSCALL_DEFINE1(ft_wait, int __user *, status)
 
 	DECLARE_WAIT_QUEUE_HEAD(my_wait_queue);
 	wait_event(my_wait_queue, 0);
-	printf("wait_event return\n");
+	printk("wait_event return\n");
 	// schedule();
 
 
