@@ -12,8 +12,8 @@ int main(int argc, char const *argv[])
 
 	if (!pid)
 	{
-		// while (1){}
-		return 2;
+		while (1){}
+		// return 2;
 	}
 	else
 	{
