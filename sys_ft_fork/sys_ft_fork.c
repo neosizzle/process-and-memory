@@ -9,6 +9,19 @@
 #include <linux/completion.h>
 #include <linux/freezer.h>
 
+static struct task_struct *ft_copy_process(
+					unsigned long clone_flags,
+					unsigned long stack_start,
+					unsigned long stack_size,
+					int __user *child_tidptr,
+					struct pid *pid,
+					int trace,
+					unsigned long tls,
+					int node)
+{
+	return 0;
+}
+
 static int wait_for_vfork_done(struct task_struct *child,
 				struct completion *vfork)
 {
@@ -76,9 +89,9 @@ long ft_do_fork(
 		// set child status to TASK_STOPPED and send pending SIGSTOP signal to it
 		trace_child->state = TASK_STOPPED;
 
-		info.si_signo = sig;
+		info.si_signo = SIGSTOP;
 		info.si_errno = 0;
-		info.si_code = SIGSTOP;
+		info.si_code = SI_KERNEL;
 		send_sig_info(SIGSTOP, &info, child);
 	}
 	else
@@ -112,7 +125,7 @@ long ft_do_fork(
 	if (clone_flags & CLONE_VFORK) {
 			printk("[DEBUG] waiting for vfork done \n");
 		// releases its address space (terminate or execve)
-		if (!wait_for_vfork_done(p, &vfork))
+		if (!wait_for_vfork_done(child, &vfork))
 			ptrace_event_pid(PTRACE_EVENT_VFORK_DONE, pid);
 	}
 
