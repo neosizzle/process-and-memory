@@ -88,6 +88,17 @@
 
 #include <trace/events/sched.h>
 int max_threads = 40;		/* tunable limit on nr_threads */
+/* SLAB cache for signal_struct structures (tsk->signal) */
+static struct kmem_cache *signal_cachep;
+
+static int copy_signal(unsigned long clone_flags, struct task_struct *tsk);
+static void mmdrop_async(struct mm_struct *mm);
+static struct mm_struct *dup_mm(struct task_struct *tsk);
+static unsigned long *alloc_thread_stack_node(struct task_struct *tsk, int node);
+static void account_kernel_stack(struct task_struct *tsk, int account);
+static inline void free_thread_stack(struct task_struct *tsk);
+static inline void free_task_struct(struct task_struct *tsk);
+
 static struct task_struct *dup_task_struct(struct task_struct *orig, int node);
 static void rt_mutex_init_task(struct task_struct *p);
 static inline void rcu_copy_process(struct task_struct *p);
@@ -566,6 +577,213 @@ fork_out:
 	return ERR_PTR(retval);
 }
 
+static inline void free_task_struct(struct task_struct *tsk)
+{
+	kmem_cache_free(task_struct_cachep, tsk);
+}
+
+static inline void free_thread_stack(struct task_struct *tsk)
+{
+#ifdef CONFIG_VMAP_STACK
+	if (task_stack_vm_area(tsk)) {
+		int i;
+
+		for (i = 0; i < NR_CACHED_STACKS; i++) {
+			if (this_cpu_cmpxchg(cached_stacks[i],
+					NULL, tsk->stack_vm_area) != NULL)
+				continue;
+
+			return;
+		}
+
+		vfree_atomic(tsk->stack);
+		return;
+	}
+#endif
+
+	__free_pages(virt_to_page(tsk->stack), THREAD_SIZE_ORDER);
+}
+
+static void account_kernel_stack(struct task_struct *tsk, int account)
+{
+	void *stack = task_stack_page(tsk);
+	struct vm_struct *vm = task_stack_vm_area(tsk);
+
+	BUILD_BUG_ON(IS_ENABLED(CONFIG_VMAP_STACK) && PAGE_SIZE % 1024 != 0);
+
+	if (vm) {
+		int i;
+
+		BUG_ON(vm->nr_pages != THREAD_SIZE / PAGE_SIZE);
+
+		for (i = 0; i < THREAD_SIZE / PAGE_SIZE; i++) {
+			mod_zone_page_state(page_zone(vm->pages[i]),
+					    NR_KERNEL_STACK_KB,
+					    PAGE_SIZE / 1024 * account);
+		}
+
+		/* All stack pages belong to the same memcg. */
+		mod_memcg_page_state(vm->pages[0], MEMCG_KERNEL_STACK_KB,
+				     account * (THREAD_SIZE / 1024));
+	} else {
+		/*
+		 * All stack pages are in the same zone and belong to the
+		 * same memcg.
+		 */
+		struct page *first_page = virt_to_page(stack);
+
+		mod_zone_page_state(page_zone(first_page), NR_KERNEL_STACK_KB,
+				    THREAD_SIZE / 1024 * account);
+
+		mod_memcg_page_state(first_page, MEMCG_KERNEL_STACK_KB,
+				     account * (THREAD_SIZE / 1024));
+	}
+}
+
+static unsigned long *alloc_thread_stack_node(struct task_struct *tsk, int node)
+{
+#ifdef CONFIG_VMAP_STACK
+	void *stack;
+	int i;
+
+	for (i = 0; i < NR_CACHED_STACKS; i++) {
+		struct vm_struct *s;
+
+		s = this_cpu_xchg(cached_stacks[i], NULL);
+
+		if (!s)
+			continue;
+
+		/* Clear stale pointers from reused stack. */
+		memset(s->addr, 0, THREAD_SIZE);
+
+		tsk->stack_vm_area = s;
+		return s->addr;
+	}
+
+	stack = __vmalloc_node_range(THREAD_SIZE, THREAD_ALIGN,
+				     VMALLOC_START, VMALLOC_END,
+				     THREADINFO_GFP,
+				     PAGE_KERNEL,
+				     0, node, __builtin_return_address(0));
+
+	/*
+	 * We can't call find_vm_area() in interrupt context, and
+	 * free_thread_stack() can be called in interrupt context,
+	 * so cache the vm_struct.
+	 */
+	if (stack)
+		tsk->stack_vm_area = find_vm_area(stack);
+	return stack;
+#else
+	struct page *page = alloc_pages_node(node, THREADINFO_GFP,
+					     THREAD_SIZE_ORDER);
+
+	return page ? page_address(page) : NULL;
+#endif
+}
+
+static inline struct task_struct *alloc_task_struct_node(int node)
+{
+	return kmem_cache_alloc_node(task_struct_cachep, GFP_KERNEL, node);
+}
+
+/*
+ * Allocate a new mm structure and copy contents from the
+ * mm structure of the passed in task structure.
+ */
+static struct mm_struct *dup_mm(struct task_struct *tsk)
+{
+	struct mm_struct *mm, *oldmm = current->mm;
+	int err;
+
+	mm = allocate_mm();
+	if (!mm)
+		goto fail_nomem;
+
+	memcpy(mm, oldmm, sizeof(*mm));
+
+	if (!mm_init(mm, tsk, mm->user_ns))
+		goto fail_nomem;
+
+	err = dup_mmap(mm, oldmm);
+	if (err)
+		goto free_pt;
+
+	mm->hiwater_rss = get_mm_rss(mm);
+	mm->hiwater_vm = mm->total_vm;
+
+	if (mm->binfmt && !try_module_get(mm->binfmt->module))
+		goto free_pt;
+
+	return mm;
+
+free_pt:
+	/* don't put binfmt in mmput, we haven't got module yet */
+	mm->binfmt = NULL;
+	mmput(mm);
+
+fail_nomem:
+	return NULL;
+}
+
+static void mmdrop_async(struct mm_struct *mm)
+{
+	if (unlikely(atomic_dec_and_test(&mm->mm_count))) {
+		INIT_WORK(&mm->async_put_work, mmdrop_async_fn);
+		schedule_work(&mm->async_put_work);
+	}
+}
+
+static int copy_signal(unsigned long clone_flags, struct task_struct *tsk)
+{
+	struct signal_struct *sig;
+
+	if (clone_flags & CLONE_THREAD)
+		return 0;
+
+	sig = kmem_cache_zalloc(signal_cachep, GFP_KERNEL);
+	tsk->signal = sig;
+	if (!sig)
+		return -ENOMEM;
+
+	sig->nr_threads = 1;
+	atomic_set(&sig->live, 1);
+	atomic_set(&sig->sigcnt, 1);
+
+	/* list_add(thread_node, thread_head) without INIT_LIST_HEAD() */
+	sig->thread_head = (struct list_head)LIST_HEAD_INIT(tsk->thread_node);
+	tsk->thread_node = (struct list_head)LIST_HEAD_INIT(sig->thread_head);
+
+	init_waitqueue_head(&sig->wait_chldexit);
+	sig->curr_target = tsk;
+	init_sigpending(&sig->shared_pending);
+	seqlock_init(&sig->stats_lock);
+	prev_cputime_init(&sig->prev_cputime);
+
+#ifdef CONFIG_POSIX_TIMERS
+	INIT_LIST_HEAD(&sig->posix_timers);
+	hrtimer_init(&sig->real_timer, CLOCK_MONOTONIC, HRTIMER_MODE_REL);
+	sig->real_timer.function = it_real_fn;
+#endif
+
+	task_lock(current->group_leader);
+	memcpy(sig->rlim, current->signal->rlim, sizeof sig->rlim);
+	task_unlock(current->group_leader);
+
+	posix_cpu_timers_init_group(sig);
+
+	tty_audit_fork(sig);
+	sched_autogroup_fork(sig);
+
+	sig->oom_score_adj = current->signal->oom_score_adj;
+	sig->oom_score_adj_min = current->signal->oom_score_adj_min;
+
+	mutex_init(&sig->cred_guard_mutex);
+
+	return 0;
+}
+
 static inline void free_signal_struct(struct signal_struct *sig)
 {
 	taskstats_tgid_free(sig);
@@ -623,7 +841,6 @@ init_task_pid(struct task_struct *task, enum pid_type type, struct pid *pid)
 {
 	 task->pids[type].pid = pid;
 }
-
 
 static int copy_io(unsigned long clone_flags, struct task_struct *tsk)
 {
