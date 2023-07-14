@@ -9,6 +9,19 @@
 #include <linux/completion.h>
 #include <linux/freezer.h>
 
+/**
+ * ref
+*/
+__latent_entropy struct task_struct *copy_process(
+					unsigned long clone_flags,
+					unsigned long stack_start,
+					unsigned long stack_size,
+					int __user *child_tidptr,
+					struct pid *pid,
+					int trace,
+					unsigned long tls,
+					int node);
+
 static struct task_struct *ft_copy_process(
 					unsigned long clone_flags,
 					unsigned long stack_start,
@@ -87,7 +100,7 @@ long ft_do_fork(
 	{
 		printk("[DEBUG] trace child, sending stop signal\n");
 		// set child status to TASK_STOPPED and send pending SIGSTOP signal to it
-		trace_child->state = TASK_STOPPED;
+		child->state = TASK_STOPPED;
 
 		info.si_signo = SIGSTOP;
 		info.si_errno = 0;
@@ -126,7 +139,7 @@ long ft_do_fork(
 			printk("[DEBUG] waiting for vfork done \n");
 		// releases its address space (terminate or execve)
 		if (!wait_for_vfork_done(child, &vfork))
-			ptrace_event_pid(PTRACE_EVENT_VFORK_DONE, pid);
+			ptrace_event_pid(PTRACE_EVENT_VFORK_DONE, child_pid_struct);
 	}
 
 	printk("[DEBUG] returning child pid... \n");
