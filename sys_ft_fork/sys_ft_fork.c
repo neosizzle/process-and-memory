@@ -29,9 +29,9 @@ static int wait_for_vfork_done(struct task_struct *child,
 }
 
 long ft_do_fork(
-	unsinged long clone_flags,
-	unsinged long stack_start,
-	unsinged long stack_size,
+	unsigned long clone_flags,
+	unsigned long stack_start,
+	unsigned long stack_size,
 	int __user *parent_tidptr,
 	int __user *child_tidptr,
 	unsigned long tls
