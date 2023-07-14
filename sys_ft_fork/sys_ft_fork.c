@@ -51,7 +51,7 @@ long ft_do_fork(
 )
 {
 	int trace_child;
-	task_struct *child;
+	struct task_struct *child;
 	struct siginfo info;
 	long child_pid;
 	struct pid *child_pid_struct;
