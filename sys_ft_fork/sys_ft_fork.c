@@ -12,7 +12,7 @@
 #include <linux/slab_def.h>
 #include <linux/kthread.h>
 #include <linux/user-return-notifier.h>
-
+#include <linux/gfp.h>
 static struct kmem_cache *task_struct_cachep;
 
 static inline struct task_struct *ft_alloc_task_struct_node(int node)
@@ -23,6 +23,15 @@ static inline struct task_struct *ft_alloc_task_struct_node(int node)
 static inline void ft_free_task_struct(struct task_struct *tsk)
 {
 	kmem_cache_free(task_struct_cachep, tsk);
+}
+
+// no idea - allocate new stack for kernel thread
+static unsigned long *alloc_thread_stack_node(struct task_struct *tsk, int node)
+{
+	struct page *page = alloc_pages_node(node, THREADINFO_GFP,
+					     THREAD_SIZE_ORDER);
+
+	return page ? page_address(page) : NULL;
 }
 
 static struct task_struct * ft_dup_task_struct(struct task_struct *orig, int node)
@@ -51,17 +60,18 @@ static struct task_struct * ft_dup_task_struct(struct task_struct *orig, int nod
 	}
 
 	// allocate and manage new stack in vm area  
-	// if ((stack_vm_area = task_stack_vm_area(tsk)) == NULL)
-	// {
-	// 	printk("[ERROR] task_stack_vm_area failed\n");
-	// 	return NULL;
-	// }
+	if ((stack_vm_area = task_stack_vm_area(tsk)) == NULL)
+	{
+		printk("[ERROR] task_stack_vm_area failed\n");
+		return NULL;
+	}
 
 	*tsk = *orig;
 	
 	// reassign stacks
 	tsk->stack = stack;
-	// tsk->stack_vm_area = stack_vm_area;
+	// tsk->stack_vm_area = stack_vm_area; // CONFIG_VMAP_STACK
+
 
 	// configures stack
 	setup_thread_stack(tsk, orig);
@@ -72,6 +82,9 @@ static struct task_struct * ft_dup_task_struct(struct task_struct *orig, int nod
 	// clear 'rescheduling necessary' flag
 	clear_tsk_need_resched(tsk);
 
+	// set tsk->usage to 2 to spicify that the descriptor is in use
+	// and that the process is alive
+	tsk->usage = 2;
 
 	return tsk;
 }
@@ -234,7 +247,7 @@ static void task_struct_whitelist(unsigned long *offset, unsigned long *size)
 		*offset += offsetof(struct task_struct, thread);
 }
 
-void init_globals()
+void init_globals(void)
 {
 	if (!task_struct_cachep)
 	{
