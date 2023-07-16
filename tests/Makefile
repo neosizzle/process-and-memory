@@ -34,7 +34,7 @@ CYAN=\033[0;36m
 NC=\033[0m # No Color
 
 
-all : ${NAME_1} ${NAME_0} ${NAME_2}
+all : ${NAME_1} ${NAME_0} ${NAME_2} ${NAME_3}
 	@echo "${GREEN}✔️  Done build..${NC}"
 
 # Linking
