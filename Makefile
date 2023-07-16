@@ -30,6 +30,9 @@ all :
 	@cp /usr/src/linux-$(KERNEL_VER)/arch/x86/boot/bzImage /boot/vmlinuz-4.17.0-jng
 	@grub-install /dev/sda
 
+reboot: all
+	reboot
+
 test :
 	@echo "📇  Descending to /tests.."
 	@make -C tests
