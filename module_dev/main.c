@@ -49,6 +49,7 @@ static struct task_struct *ft_copy_process(
 	struct task_struct *tsk;
 
 	// check for flag compatibility
+	printk("[DEBUG] checking flag compatibility...\n");
 	if ((clone_flags & (CLONE_NEWNS|CLONE_FS)) == (CLONE_NEWNS|CLONE_FS))
 		return ERR_PTR(-EINVAL);
 	
@@ -61,6 +62,7 @@ static struct task_struct *ft_copy_process(
 	// security checks (ommiting :P)
 
 	// dup_task_struct
+	printk("[DEBUG] dup_task_struct...\n");
 	tsk = dup_task_struct(current, node);
 	return 0;
 }
