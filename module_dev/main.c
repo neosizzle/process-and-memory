@@ -13,11 +13,19 @@
 #include <linux/string.h>
 
 #include <linux/slab.h>
+#include <linux/slab_def.h>
+#include <linux/kthread.h>
 
-// static inline struct task_struct *ft_alloc_task_struct_node(int node)
-// {
-// 	return kmem_cache_alloc_node(task_struct_cachep, GFP_KERNEL, node);
-// }
+static struct kmem_cache *task_struct_cachep;
+static inline struct task_struct *ft_alloc_task_struct_node(int node)
+{
+	return kmem_cache_alloc_node(task_struct_cachep, GFP_KERNEL, node);
+}
+
+static inline void ft_free_task_struct(struct task_struct *tsk)
+{
+	kmem_cache_free(task_struct_cachep, tsk);
+}
 
 static struct task_struct * ft_dup_task_struct(struct task_struct *orig, int node)
 {
@@ -63,7 +71,7 @@ static struct task_struct *ft_copy_process(
 
 	// dup_task_struct
 	printk("[DEBUG] dup_task_struct...\n");
-	tsk = dup_task_struct(current, node);
+	tsk = ft_dup_task_struct(current, node);
 	return 0;
 }
 
