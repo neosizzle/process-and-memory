@@ -52,7 +52,7 @@ ${NAME_2}: ${OBJS_TARGET_2}
 
 ${NAME_3}: ${OBJS_TARGET_3}
 	@echo "${GREEN}😏  Linking ${foreach obj,${OBJS_3},${BUILDDIR}${obj}}.. ${NC}"
-	@${CC} ${foreach obj,${OBJS_3},${BUILDDIR}${obj}} ${C_FLAGS} -o ${NAME_2}
+	@${CC} ${foreach obj,${OBJS_3},${BUILDDIR}${obj}} ${C_FLAGS} -o ${NAME_3}
 
 # Compiling
 build/%.o : ${OBJS_0} ${OBJS_1} ${OBJS_2} ${OBJS_3}
