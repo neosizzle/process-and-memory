@@ -13,8 +13,11 @@
 #include <linux/kthread.h>
 #include <linux/user-return-notifier.h>
 #include <linux/gfp.h>
+#include <linux/memcontrol.h>
+
 static struct kmem_cache *task_struct_cachep;
 
+// allocate raw memory for task_struct
 static inline struct task_struct *ft_alloc_task_struct_node(int node)
 {
 	return kmem_cache_alloc_node(task_struct_cachep, GFP_KERNEL, node);
@@ -32,6 +35,41 @@ static unsigned long *alloc_thread_stack_node(struct task_struct *tsk, int node)
 					     THREAD_SIZE_ORDER);
 
 	return page ? page_address(page) : NULL;
+}
+
+// change page state counters 
+static void account_kernel_stack(struct task_struct *tsk, int account)
+{
+	void *stack = task_stack_page(tsk);
+	struct vm_struct *vm = task_stack_vm_area(tsk);
+
+	if (vm) {
+		int i;
+
+		BUG_ON(vm->nr_pages != THREAD_SIZE / PAGE_SIZE);
+
+		for (i = 0; i < THREAD_SIZE / PAGE_SIZE; i++) {
+			mod_zone_page_state(page_zone(vm->pages[i]),
+					    NR_KERNEL_STACK_KB,
+					    PAGE_SIZE / 1024 * account);
+		}
+
+		/* All stack pages belong to the same memcg. */
+		mod_memcg_page_state(vm->pages[0], MEMCG_KERNEL_STACK_KB,
+				     account * (THREAD_SIZE / 1024));
+	} else {
+		/*
+		 * All stack pages are in the same zone and belong to the
+		 * same memcg.
+		 */
+		struct page *first_page = virt_to_page(stack);
+
+		mod_zone_page_state(page_zone(first_page), NR_KERNEL_STACK_KB,
+				    THREAD_SIZE / 1024 * account);
+
+		mod_memcg_page_state(first_page, MEMCG_KERNEL_STACK_KB,
+				     account * (THREAD_SIZE / 1024));
+	}
 }
 
 static struct task_struct * ft_dup_task_struct(struct task_struct *orig, int node)
@@ -87,10 +125,17 @@ static struct task_struct * ft_dup_task_struct(struct task_struct *orig, int nod
 
 	// set tsk->usage to 2 to spicify that the descriptor is in use
 	// and that the process is alive
-	tsk->usage = 2;
+	atomic_set(&tsk->usage, 2);
 
-	// return tsk;
-	return 0;
+	// init some variables to NULL (pipe variables?)
+	tsk->splice_pipe = NULL;
+	tsk->task_frag.page = NULL;
+	tsk->wake_q.next = NULL
+
+	// modify page state coutners
+	account_kernel_stack(tsk, 1);
+
+	return tsk;
 }
 
 
