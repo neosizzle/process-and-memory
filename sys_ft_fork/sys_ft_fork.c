@@ -9,19 +9,6 @@
 #include <linux/completion.h>
 #include <linux/freezer.h>
 
-/**
- * ref
-*/
-__latent_entropy struct task_struct *copy_process(
-					unsigned long clone_flags,
-					unsigned long stack_start,
-					unsigned long stack_size,
-					int __user *child_tidptr,
-					struct pid *pid,
-					int trace,
-					unsigned long tls,
-					int node);
-
 static struct task_struct *ft_copy_process(
 					unsigned long clone_flags,
 					unsigned long stack_start,
@@ -86,7 +73,7 @@ long ft_do_fork(
 	}
 
 	// call copy_process(), the returning task_struct is the new child struct
-	child = copy_process(clone_flags, stack_start, stack_size,
+	child = ft_copy_process(clone_flags, stack_start, stack_size,
 		child_tidptr, NULL, trace_child, tls, NUMA_NO_NODE);
 
 	if (!child)

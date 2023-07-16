@@ -1,1 +1,1 @@
-obj-y:=copy_process_ref.o sys_ft_fork.o
+obj-y:= sys_ft_fork.o

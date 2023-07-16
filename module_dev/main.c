@@ -12,131 +12,26 @@
 #include <linux/slab.h>
 #include <linux/string.h>
 
-struct pid_info
+static struct task_struct *ft_copy_process(
+					unsigned long clone_flags,
+					unsigned long stack_start,
+					unsigned long stack_size,
+					int __user *child_tidptr,
+					struct pid *pid,
+					int trace,
+					unsigned long tls,
+					int node)
 {
-	long     pid;
-	long     state;
-	long   process_stack;
-	long    age;
-	long*   children;
-	long	parent_pid;
-	const char*	root;
-	const char*	pwd;
-};
-
-static long get_uptime(void)
-{
-	struct timespec uptime;
-	get_monotonic_boottime(&uptime);
-	return uptime.tv_sec;
+	return 0;
 }
 
-static char	*ft_strdup(const char *s1)
-{
-	char	*dest;
-	int		s1_len;
-	int		i;
-
-	s1_len = 0;
-	while (s1[s1_len])
-		s1_len++;
-	if (!(dest = (char *)kmalloc(sizeof(char) * (s1_len + 1), GFP_KERNEL)))
-		return (NULL);
-	i = 0;
-	while (i < s1_len)
-	{
-		dest[i] = s1[i];
-		i++;
-	}
-	dest[i] = '\0';
-	return (dest);
-}
-
-static char *walk_to_root(struct dentry *entry)
-{
-	int walk = 0;
-	char *temp = kmalloc(1, GFP_KERNEL);
-	temp[0] = 0;
-	char *res;
-
-	while (entry)
-	{
-		char *curr_dir_name = entry->d_name.name;
-		if (strcmp(curr_dir_name, "/") == 0)
-			break;
-		res = kmalloc(strlen(curr_dir_name) + strlen(temp) + 2, GFP_KERNEL);
-		strcpy(res, curr_dir_name);
-		if (walk)
-			strcat(res, "/");
-		else
-			++walk;
-		strcat(res, temp);
-		kfree(temp);
-		temp = ft_strdup(res);
-		entry = entry->d_parent;
-		++walk;
-	}
-	res = kmalloc(strlen(temp) + 2, GFP_KERNEL);
-	strcpy(res, "/");
-	strcat(res, temp);
-	kfree(temp);
-	return res;
-}
-
-static struct pid_info *create_pid_info(int pid)
-{
-	struct pid_info *res;
-	struct task_struct *task = pid_task(find_get_pid(pid), PIDTYPE_PID);
-	struct task_struct *child_task;
-	int children_length;
-	int i;
-	long *children;
-
-	res = kmalloc(sizeof(struct pid_info), GFP_USER);
-	res->pid = task->pid;
-	res->state = task->state;
-	res->process_stack = task->mm->start_stack;
-	res->parent_pid = task->real_parent->pid;
-	res->root = task->fs->root.dentry->d_name.name;
-	res->pwd = walk_to_root(task->fs->pwd.dentry);
-
-	// age
-	res->age = get_uptime() - ((task->real_start_time / 10000000) / (HZ / 10));
-	
-	// children
-	children_length = 0;
-	i = 0;
-	list_for_each_entry(child_task, &task->children, sibling) {
-   		// printk(KERN_INFO "Child PID: %d\n", child_task->pid);
-		++children_length;
-	}
-
-	children = kmalloc(sizeof(long) * (children_length + 1), GFP_KERNEL);
-
-	list_for_each_entry(child_task, &task->children, sibling) {
-   		children[i++] = child_task->pid;
-	}
-	children[i] = 0;
-	res->children = children;
-
-	return res;
-}
 
 /**
  * Module Init. Registers a USB device and creates a misc device in /dev/ft_module_keyboard
 */
 int init_module(void)
 {
-	printk("currpid %d\n\n", 2280);
-	struct pid_info * pidinfo = create_pid_info(2280);
-	printk("pid_str, %d\nstate_str, %d\nppid, %d\nage, %ld\nstack, %ld\ncwd, %s\n",
-	pidinfo->pid,
-	pidinfo->state,
-	pidinfo->parent_pid,
-	pidinfo->age,
-	pidinfo->process_stack,
-	pidinfo->pwd
-	);
+	
 	return 0;
 }
 

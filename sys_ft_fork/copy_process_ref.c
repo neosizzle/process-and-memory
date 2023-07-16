@@ -87,6 +87,7 @@
 #include <asm/tlbflush.h>
 
 #include <trace/events/sched.h>
+#define NR_CACHED_STACKS 2
 int max_threads = 40;		/* tunable limit on nr_threads */
 /* SLAB cache for signal_struct structures (tsk->signal) */
 static struct kmem_cache *signal_cachep;
