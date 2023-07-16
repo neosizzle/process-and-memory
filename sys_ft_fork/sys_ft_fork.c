@@ -8,7 +8,6 @@
 #include <linux/pid.h>
 #include <linux/completion.h>
 #include <linux/freezer.h>
-
 #include <linux/slab.h>
 #include <linux/slab_def.h>
 #include <linux/kthread.h>
@@ -27,6 +26,8 @@ static inline void ft_free_task_struct(struct task_struct *tsk)
 static struct task_struct * ft_dup_task_struct(struct task_struct *orig, int node)
 {
 	struct task_struct *tsk;
+	unsigned long *stack;
+	struct vm_struct *stack_vm_area;
 
 	// non uniform memory address node
 	if (node == NUMA_NO_NODE)
@@ -37,7 +38,26 @@ static struct task_struct * ft_dup_task_struct(struct task_struct *orig, int nod
 	if (!tsk)
 		return NULL;
 
+	// allocate new stack for kernel thread
+	if ((stack = alloc_thread_stack_node(tsk, node)) == NULL)
+	{
+		printk("[ERROR] alloc_thread_stack_node failed\n");
+		return NULL;
+	}
+
+	// allocate and manage new stack in vm area  
+	// if ((stack_vm_area = task_stack_vm_area(tsk)) == NULL)
+	// {
+	// 	printk("[ERROR] task_stack_vm_area failed\n");
+	// 	return NULL;
+	// }
+
 	*tsk = *orig;
+	
+	// reassign stacks
+	tsk->stack = stack;
+	// tsk->stack_vm_area = stack_vm_area;
+
 	return tsk;
 }
 
