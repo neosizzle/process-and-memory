@@ -130,7 +130,7 @@ static struct task_struct * ft_dup_task_struct(struct task_struct *orig, int nod
 	// init some variables to NULL (pipe variables?)
 	tsk->splice_pipe = NULL;
 	tsk->task_frag.page = NULL;
-	tsk->wake_q.next = NULL
+	tsk->wake_q.next = NULL;
 
 	// modify page state coutners
 	account_kernel_stack(tsk, 1);
