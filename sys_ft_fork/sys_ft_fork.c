@@ -89,7 +89,8 @@ static struct task_struct * ft_dup_task_struct(struct task_struct *orig, int nod
 	// and that the process is alive
 	tsk->usage = 2;
 
-	return tsk;
+	// return tsk;
+	return 0;
 }
 
 
