@@ -82,6 +82,9 @@ static struct task_struct * ft_dup_task_struct(struct task_struct *orig, int nod
 	// clear 'rescheduling necessary' flag
 	clear_tsk_need_resched(tsk);
 
+	// set the tasks stack end magic number to be valid
+	set_task_stack_end_magic(tsk);
+
 	// set tsk->usage to 2 to spicify that the descriptor is in use
 	// and that the process is alive
 	tsk->usage = 2;
