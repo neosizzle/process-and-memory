@@ -36,7 +36,7 @@ static struct task_struct * ft_dup_task_struct(struct task_struct *orig, int nod
 		node = tsk_fork_get_node(orig);
 
 	// allocate a fresh task_struct with the numa node type
-	tsk = alloc_task_struct_node(node);
+	tsk = ft_alloc_task_struct_node(node);
 	if (!tsk)
 		return NULL;
 
