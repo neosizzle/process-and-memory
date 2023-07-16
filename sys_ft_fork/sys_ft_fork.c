@@ -97,19 +97,15 @@ static struct task_struct * ft_dup_task_struct(struct task_struct *orig, int nod
 		return NULL;
 	}
 
-	// allocate and manage new stack in vm area  
-	if ((stack_vm_area = task_stack_vm_area(tsk)) == NULL)
-	{
-		printk("[ERROR] task_stack_vm_area failed\n");
-		return NULL;
-	}
+	// get the childs vm area ? should be stuff inside
+	// preconfigured ig  
+	stack_vm_area = task_stack_vm_area(tsk);
 
 	*tsk = *orig;
 	
 	// reassign stacks
 	tsk->stack = stack;
 	// tsk->stack_vm_area = stack_vm_area; // CONFIG_VMAP_STACK
-
 
 	// configures stack
 	setup_thread_stack(tsk, orig);
@@ -167,6 +163,12 @@ static struct task_struct *ft_copy_process(
 	// dup_task_struct
 	printk("[DEBUG] dup_task_struct...\n");
 	tsk = ft_dup_task_struct(current, node);
+	if (!tsk)
+	{
+		printk("[ERROR] dup_task_struct fail...\n");
+		return 0;
+	}
+
 	return 0;
 }
 
