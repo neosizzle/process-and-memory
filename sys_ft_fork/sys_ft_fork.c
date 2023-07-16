@@ -11,8 +11,10 @@
 #include <linux/slab.h>
 #include <linux/slab_def.h>
 #include <linux/kthread.h>
+#include <linux/user-return-notifier.h>
 
 static struct kmem_cache *task_struct_cachep;
+
 static inline struct task_struct *ft_alloc_task_struct_node(int node)
 {
 	return kmem_cache_alloc_node(task_struct_cachep, GFP_KERNEL, node);
@@ -35,8 +37,11 @@ static struct task_struct * ft_dup_task_struct(struct task_struct *orig, int nod
 
 	// allocate a fresh task_struct with the numa node type
 	tsk = ft_alloc_task_struct_node(node);
-	if (!tsk)
+	if (!(tsk = ft_alloc_task_struct_node(node)))
+	{
+		printk("[ERROR] ft_alloc_task_struct_node failed\n");
 		return NULL;
+	}
 
 	// allocate new stack for kernel thread
 	if ((stack = alloc_thread_stack_node(tsk, node)) == NULL)
@@ -57,6 +62,16 @@ static struct task_struct * ft_dup_task_struct(struct task_struct *orig, int nod
 	// reassign stacks
 	tsk->stack = stack;
 	// tsk->stack_vm_area = stack_vm_area;
+
+	// configures stack
+	setup_thread_stack(tsk, orig);
+
+	// clear 'notify kernel of userspace return' flag
+	clear_user_return_notifier(tsk);
+
+	// clear 'rescheduling necessary' flag
+	clear_tsk_need_resched(tsk);
+
 
 	return tsk;
 }
@@ -204,8 +219,43 @@ long ft_do_fork(
 	return child_pid;
 }
 
+static void task_struct_whitelist(unsigned long *offset, unsigned long *size)
+{
+	/* Fetch thread_struct whitelist for the architecture. */
+	arch_thread_struct_whitelist(offset, size);
+
+	/*
+	 * Handle zero-sized whitelist or empty thread_struct, otherwise
+	 * adjust offset to position of thread_struct in task_struct.
+	 */
+	if (unlikely(*size == 0))
+		*offset = 0;
+	else
+		*offset += offsetof(struct task_struct, thread);
+}
+
+void init_globals()
+{
+	if (!task_struct_cachep)
+	{
+		int align = max_t(int, L1_CACHE_BYTES, ARCH_MIN_TASKALIGN);
+		unsigned long useroffset, usersize;
+
+		/* create a slab on which task_structs can be allocated */
+		task_struct_whitelist(&useroffset, &usersize);
+		task_struct_cachep = kmem_cache_create_usercopy("task_struct",
+				arch_task_struct_size, align,
+				SLAB_PANIC|SLAB_ACCOUNT,
+				useroffset, usersize, NULL);
+	}
+}
+
 SYSCALL_DEFINE0(ft_fork)
 {
+	// initializes globals
+	init_globals();
+
+	// do actual forking
 	return ft_do_fork(
 		SIGCHLD,
 		0,
