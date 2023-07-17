@@ -28,6 +28,7 @@
 #include <linux/timekeeping.h>
 #include <linux/perf_event.h>
 #include <linux/audit.h>
+#include <linux/tsacct_kern.h>
 
 // use kernel/fork.c variables
 extern unsigned long total_forks;	/* Handle normal Linux uptimes. */
@@ -256,12 +257,12 @@ static struct task_struct *ft_copy_process(
 	acct_clear_integrals(p);
 
 	// cpu timers init
-	tsk->cputime_expires.prof_exp = 0;
-	tsk->cputime_expires.virt_exp = 0;
-	tsk->cputime_expires.sched_exp = 0;
-	INIT_LIST_HEAD(&tsk->cpu_timers[0]);
-	INIT_LIST_HEAD(&tsk->cpu_timers[1]);
-	INIT_LIST_HEAD(&tsk->cpu_timers[2]);
+	p->cputime_expires.prof_exp = 0;
+	p->cputime_expires.virt_exp = 0;
+	p->cputime_expires.sched_exp = 0;
+	INIT_LIST_HEAD(&p->cpu_timers[0]);
+	INIT_LIST_HEAD(&p->cpu_timers[1]);
+	INIT_LIST_HEAD(&p->cpu_timers[2]);
 
 	// set cpu times
 	p->start_time = ktime_get_ns();
