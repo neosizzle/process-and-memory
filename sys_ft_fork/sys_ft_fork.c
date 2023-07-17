@@ -39,6 +39,7 @@
 #include <linux/perf_event.h>
 #include <linux/uprobes.h>
 #include <linux/tty.h>
+#include <linux/mempolicy.h>
 
 void ft_proc_caches_init(void);
 int copy_files(unsigned long clone_flags, struct task_struct *tsk);
