@@ -307,22 +307,22 @@ static void sighand_ctor(void *data)
 // init cache objects
 void ft_proc_caches_init(void)
 {
-	sighand_cachep = kmem_cache_create("sighand_cache",
-			sizeof(struct sighand_struct), 0,
-			SLAB_HWCACHE_ALIGN|SLAB_PANIC|SLAB_TYPESAFE_BY_RCU|
-			SLAB_ACCOUNT, sighand_ctor);
-	signal_cachep = kmem_cache_create("signal_cache",
-			sizeof(struct signal_struct), 0,
-			SLAB_HWCACHE_ALIGN|SLAB_PANIC|SLAB_ACCOUNT,
-			NULL);
-	files_cachep = kmem_cache_create("files_cache",
-			sizeof(struct files_struct), 0,
-			SLAB_HWCACHE_ALIGN|SLAB_PANIC|SLAB_ACCOUNT,
-			NULL);
-	fs_cachep = kmem_cache_create("fs_cache",
-			sizeof(struct fs_struct), 0,
-			SLAB_HWCACHE_ALIGN|SLAB_PANIC|SLAB_ACCOUNT,
-			NULL);
+	// sighand_cachep = kmem_cache_create("sighand_cache",
+	// 		sizeof(struct sighand_struct), 0,
+	// 		SLAB_HWCACHE_ALIGN|SLAB_PANIC|SLAB_TYPESAFE_BY_RCU|
+	// 		SLAB_ACCOUNT, sighand_ctor);
+	// signal_cachep = kmem_cache_create("signal_cache",
+	// 		sizeof(struct signal_struct), 0,
+	// 		SLAB_HWCACHE_ALIGN|SLAB_PANIC|SLAB_ACCOUNT,
+	// 		NULL);
+	// files_cachep = kmem_cache_create("files_cache",
+	// 		sizeof(struct files_struct), 0,
+	// 		SLAB_HWCACHE_ALIGN|SLAB_PANIC|SLAB_ACCOUNT,
+	// 		NULL);
+	// fs_cachep = kmem_cache_create("fs_cache",
+	// 		sizeof(struct fs_struct), 0,
+	// 		SLAB_HWCACHE_ALIGN|SLAB_PANIC|SLAB_ACCOUNT,
+	// 		NULL);
 	/*
 	 * FIXME! The "sizeof(struct mm_struct)" currently includes the
 	 * whole struct cpumask for the OFFSTACK case. We could change
