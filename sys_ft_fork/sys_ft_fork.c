@@ -275,6 +275,10 @@ static struct task_struct *ft_copy_process(
 	// init cputime (?)
 	prev_cputime_init(&p->prev_cputime);
 
+	// allocatae memory for rss coutner state
+	// for vm
+	memset(&p->rss_stat, 0, sizeof(p->rss_stat));
+
 	// default_timer_slack_ns -> rounding of timeout values in syscalls
 	// select() poll() nanosleep()
 	p->default_timer_slack_ns = current->timer_slack_ns;
