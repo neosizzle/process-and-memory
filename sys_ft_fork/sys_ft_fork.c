@@ -34,6 +34,10 @@
 #include <linux/nsproxy.h>
 #include <linux/ptrace.h>
 #include <linux/latencytop.h>
+#include <linux/livepatch.h>
+#include <linux/cn_proc.h>
+#include <linux/perf_event.h>
+#include <linux/uprobes.h>
 
 void ft_proc_caches_init(void);
 int copy_files(unsigned long clone_flags, struct task_struct *tsk);
@@ -166,6 +170,13 @@ static struct task_struct * ft_dup_task_struct(struct task_struct *orig, int nod
 	account_kernel_stack(tsk, 1);
 
 	return tsk;
+}
+
+// set pid type in task_strucy
+static inline void
+init_task_pid(struct task_struct *task, enum pid_type type, struct pid *pid)
+{
+	 task->pids[type].pid = pid;
 }
 
 
@@ -394,9 +405,126 @@ static struct task_struct *ft_copy_process(
 
 	// set pid to the one we created, or in the args
 	p->pid = pid_nr(pid);
-	printk("child pid %d\n", p->pid);
 
-	return 0;
+	// set exit signal and group leader
+	if (clone_flags & CLONE_THREAD) {
+		p->exit_signal = -1;
+		p->group_leader = current->group_leader;
+		p->tgid = current->tgid;
+	} else {
+		if (clone_flags & CLONE_PARENT)
+			p->exit_signal = current->group_leader->exit_signal;
+		else
+			p->exit_signal = (clone_flags & CSIGNAL);
+		p->group_leader = p;
+		p->tgid = p->pid;
+	}
+
+	// set up writeback paramaters (dirty pages)
+	p->nr_dirtied = 0;
+	p->nr_dirtied_pause = 128 >> (PAGE_SHIFT - 10);
+	p->dirty_paused_when = 0;
+
+	p->pdeath_signal = 0;
+	INIT_LIST_HEAD(&p->thread_group);
+	p->task_works = NULL;
+
+	// allow cgroup policies for the new process to be forked
+	if (cgroup_can_fork(p))
+	{
+		printk("[ERROR] cgroup_can_fork failed.");
+		return 0;
+	}
+
+	// gonna make this process visible to the rest of the system
+	write_lock_irq(&tasklist_lock);
+
+	// set parent relationship
+	if (clone_flags & (CLONE_PARENT|CLONE_THREAD)) {
+		p->real_parent = current->real_parent;
+		p->parent_exec_id = current->parent_exec_id;
+	} else {
+		p->real_parent = current;
+		p->parent_exec_id = current->self_exec_id;
+	}
+
+	// copy child patch state
+	klp_copy_process(p);
+
+	// gonna react to any pending signals from before..
+	spin_lock(&current->sighand->siglock);
+
+	recalc_sigpending();
+	if (signal_pending(current)) {
+		printk("[ERROR] Interrupted by signal.");
+		return 0;
+	}
+
+	if (likely(p->pid))
+	{
+		// init ptrace task object
+		ptrace_init_task(p, (clone_flags & CLONE_PTRACE) || trace);
+
+		// set pid type of PIDTYPE_PID on task
+		init_task_pid(p, PIDTYPE_PID, pid);
+
+		// if child is a thread group leader
+		if (thread_group_leader(p)) {
+			init_task_pid(p, PIDTYPE_PGID, task_pgrp(current));
+			init_task_pid(p, PIDTYPE_SID, task_session(current));
+
+			// a reaper process is a process that cleans up zombies
+			if (is_child_reaper(pid)) {
+				ns_of_pid(pid)->child_reaper = p;
+				p->signal->flags |= SIGNAL_UNKILLABLE;
+			}
+
+			p->signal->leader_pid = pid;
+			p->signal->tty = tty_kref_get(current->signal->tty);
+			/*
+			 * Inherit has_child_subreaper flag under the same
+			 * tasklist_lock with adding child to the process tree
+			 * for propagate_has_child_subreaper optimization.
+			 */
+			p->signal->has_child_subreaper = p->real_parent->signal->has_child_subreaper ||
+							 p->real_parent->signal->is_child_subreaper;
+			list_add_tail(&p->sibling, &p->real_parent->children);
+			list_add_tail_rcu(&p->tasks, &init_task.tasks);
+			attach_pid(p, PIDTYPE_PGID);
+			attach_pid(p, PIDTYPE_SID);
+			__this_cpu_inc(process_counts);
+		} else {
+			// if not
+			current->signal->nr_threads++;
+			atomic_inc(&current->signal->live);
+			atomic_inc(&current->signal->sigcnt);
+			list_add_tail_rcu(&p->thread_group,
+					  &p->group_leader->thread_group);
+			list_add_tail_rcu(&p->thread_node,
+					  &p->signal->thread_head);
+		}
+		attach_pid(p, PIDTYPE_PID);
+		nr_threads++;
+	}
+	total_forks++;
+	spin_unlock(&current->sighand->siglock);
+	syscall_tracepoint_update(p);
+	write_unlock_irq(&tasklist_lock);
+
+	// connects process events
+	proc_fork_connector(p);
+
+	// cgroup cleanup
+	cgroup_post_fork(p);
+	cgroup_threadgroup_change_end(current);
+
+	// setup performance events
+	perf_event_fork(p);
+
+	// set up user space probes
+	uprobe_copy_process(p, clone_flags);
+
+	return p;
 }
 
 static int wait_for_vfork_done(struct task_struct *child,
