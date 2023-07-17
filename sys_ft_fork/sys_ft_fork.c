@@ -39,6 +39,7 @@ void ft_proc_caches_init(void);
 int copy_files(unsigned long clone_flags, struct task_struct *tsk);
 int copy_fs(unsigned long clone_flags, struct task_struct *tsk);
 int copy_sighand(unsigned long clone_flags, struct task_struct *tsk);
+int copy_signal(unsigned long clone_flags, struct task_struct *tsk);
 int copy_mm(unsigned long clone_flags, struct task_struct *tsk);
 int copy_io(unsigned long clone_flags, struct task_struct *tsk);
 
@@ -358,7 +359,7 @@ static struct task_struct *ft_copy_process(
 		printk("[ERROR] copy_io failed.");
 		return 0;
 	}
-	if (copy_thread_tls(clone_flags, p))
+	if (copy_thread_tls(clone_flags, stack_start, stack_size, p, tls))
 	{
 		printk("[ERROR] copy_thread_tls failed.");
 		return 0;
