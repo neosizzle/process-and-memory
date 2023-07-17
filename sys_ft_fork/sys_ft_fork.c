@@ -56,7 +56,7 @@ extern int max_threads;		/* tunable limit on nr_threads */
 
 static struct kmem_cache *task_struct_cachep;
 
-DEFINE_PER_CPU(unsigned long, process_counts) = 0; // how many process per cpu?
+DEFINE_PER_CPU(unsigned long, process_counts); // how many process per cpu?
 
 // allocate raw memory for task_struct
 static inline struct task_struct *ft_alloc_task_struct_node(int node)
