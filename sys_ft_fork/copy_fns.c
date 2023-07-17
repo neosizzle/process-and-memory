@@ -83,6 +83,14 @@ static void mm_init_uprobes_state(struct mm_struct *mm)
 #endif
 }
 
+static inline int mm_alloc_pgd(struct mm_struct *mm)
+{
+	mm->pgd = pgd_alloc(mm);
+	if (unlikely(!mm->pgd))
+		return -ENOMEM;
+	return 0;
+}
+
 static inline void mm_free_pgd(struct mm_struct *mm)
 {
 	pgd_free(mm, mm->pgd);
