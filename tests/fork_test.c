@@ -6,6 +6,7 @@
 
 int main(int argc, char const *argv[])
 {
-	syscall(363);
+	int pid = syscall(363);
+	printf("[USER] fork return %d\n", pid);
 	return 0;
 }
