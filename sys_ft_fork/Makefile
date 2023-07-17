@@ -1,1 +1,1 @@
-obj-y:= sys_ft_fork.o
+obj-y:= sys_ft_fork.o copy_fns.o

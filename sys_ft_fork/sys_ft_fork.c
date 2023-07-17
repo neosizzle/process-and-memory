@@ -29,6 +29,18 @@
 #include <linux/perf_event.h>
 #include <linux/audit.h>
 #include <linux/tsacct_kern.h>
+#include <linux/shm.h>
+#include <linux/sem.h>
+#include <linux/nsproxy.h>
+#include <linux/ptrace.h>
+#include <linux/latencytop.h>
+
+
+int copy_files(unsigned long clone_flags, struct task_struct *tsk);
+int copy_fs(unsigned long clone_flags, struct task_struct *tsk);
+int copy_sighand(unsigned long clone_flags, struct task_struct *tsk);
+int copy_mm(unsigned long clone_flags, struct task_struct *tsk);
+int copy_io(unsigned long clone_flags, struct task_struct *tsk);
 
 // use kernel/fork.c variables
 extern unsigned long total_forks;	/* Handle normal Linux uptimes. */
@@ -298,6 +310,87 @@ static struct task_struct *ft_copy_process(
 		printk("[ERROR] audit_alloc failed.");
 		return 0;
 	}
+
+	// initialize shared memory managment
+	shm_init_task(p);
+
+	// copy process information
+	if (copy_semundo(clone_flags, p))
+	{
+		printk("[ERROR] copy_semundo failed.");
+		return 0;
+	}
+	if (copy_files(clone_flags, p))
+	{
+		printk("[ERROR] copy_files failed.");
+		return 0;
+	}
+	if (copy_fs(clone_flags, p))
+	{
+		printk("[ERROR] copy_fs failed.");
+		return 0;
+	}
+	if (copy_sighand(clone_flags, p))
+	{
+		printk("[ERROR] copy_sighand failed.");
+		return 0;
+	}
+	if (copy_signal(clone_flags, p))
+	{
+		printk("[ERROR] copy_signal failed.");
+		return 0;
+	}
+	if (copy_mm(clone_flags, p))
+	{
+		printk("[ERROR] copy_mm failed.");
+		return 0;
+	}
+	if (copy_namespaces(clone_flags, p))
+	{
+		printk("[ERROR] copy_namespaces failed.");
+		return 0;
+	}
+	if (copy_io(clone_flags, p))
+	{
+		printk("[ERROR] copy_io failed.");
+		return 0;
+	}
+	if (copy_thread_tls(clone_flags, p))
+	{
+		printk("[ERROR] copy_thread_tls failed.");
+		return 0;
+	}
+	
+	// allocate a pid struct if there is none
+	if (!pid)
+		pid = alloc_pid(p->nsproxy->pid_ns_for_children);
+	
+	// if pid is error
+	if (IS_ERR(pid))
+	{
+		printk("[ERROR] alloc_pid failed.");
+		return 0;
+	}
+
+	// set some other properties..
+	p->robust_list = NULL; // robust futexes
+	INIT_LIST_HEAD(&p->pi_state_list);
+	p->pi_state_cache = NULL;
+
+	// sigaltstack should be cleared when sharing the same VM
+	if ((clone_flags & (CLONE_VM|CLONE_VFORK)) == CLONE_VM)
+		sas_ss_reset(p);
+
+	// Syscall tracing and stepping should be turned off in the
+	// child regardless of CLONE_PTRACE.
+	user_disable_single_step(p);
+	clear_tsk_thread_flag(p, TIF_SYSCALL_TRACE);
+
+	clear_all_latency_tracing(p);
+
+	// set pid to the one we created, or in the args
+	p->pid = pid_nr(pid);
+	printk("child pid %d\n". p->pid);
 
 	return 0;
 }
