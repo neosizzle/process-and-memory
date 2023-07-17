@@ -56,7 +56,7 @@ extern int max_threads;		/* tunable limit on nr_threads */
 
 static struct kmem_cache *task_struct_cachep;
 
-DEFINE_PER_CPU(unsigned long, process_counts); // how many process per cpu?
+DEFINE_PER_CPU(unsigned long, ft_process_counts) = 0; // how many process per cpu?
 
 // allocate raw memory for task_struct
 static inline struct task_struct *ft_alloc_task_struct_node(int node)
@@ -496,7 +496,7 @@ static struct task_struct *ft_copy_process(
 			list_add_tail_rcu(&p->tasks, &init_task.tasks);
 			attach_pid(p, PIDTYPE_PGID);
 			attach_pid(p, PIDTYPE_SID);
-			__this_cpu_inc(process_counts);
+			__this_cpu_inc(ft_process_counts);
 		} else {
 			// if not
 			current->signal->nr_threads++;
