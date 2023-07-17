@@ -31,7 +31,7 @@
 #include <linux/hmm.h>
 #include <linux/mmu_notifier.h>
 #include <linux/mman.h>
-
+#include <linux/binfmts.h>
 
 #include <asm-generic/mm_hooks.h>
 #include <asm-generic/mmu_context.h>
