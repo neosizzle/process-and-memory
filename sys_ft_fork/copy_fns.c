@@ -24,11 +24,25 @@
 #include <linux/security.h>
 #include <linux/rmap.h>
 #include <linux/fs.h>
+#include <linux/mempolicy.h>
+#include <linux/userfaultfd_k.h>
+#include <linux/hugetlb.h>
+#include <linux/sched/coredump.h>
+#include <linux/hmm.h>
+#include <linux/mmu_notifier.h>
+#include <linux/mman.h>
+
+
+#include <asm-generic/mm_hooks.h>
+#include <asm-generic/tlbflush.h>
+#include <asm-generic/mmu_context.h>
+
 
 
 #define allocate_mm()	(kmem_cache_alloc(mm_cachep, GFP_KERNEL))
 #define free_mm(mm)	(kmem_cache_free(mm_cachep, (mm)))
 
+static unsigned long default_dump_filter = MMF_DUMP_FILTER_DEFAULT;
 
 /* SLAB cache for signal_struct structures (tsk->signal) */
 static struct kmem_cache *signal_cachep;
@@ -47,6 +61,33 @@ struct kmem_cache *vm_area_cachep;
 
 /* SLAB cache for mm_struct structures (tsk->mm) */
 static struct kmem_cache *mm_cachep;
+
+static void mm_init_aio(struct mm_struct *mm)
+{
+#ifdef CONFIG_AIO
+	spin_lock_init(&mm->ioctx_lock);
+	mm->ioctx_table = NULL;
+#endif
+}
+
+static void mm_init_owner(struct mm_struct *mm, struct task_struct *p)
+{
+#ifdef CONFIG_MEMCG
+	mm->owner = p;
+#endif
+}
+
+static void mm_init_uprobes_state(struct mm_struct *mm)
+{
+#ifdef CONFIG_UPROBES
+	mm->uprobes_state.xol_area = NULL;
+#endif
+}
+
+static inline void mm_free_pgd(struct mm_struct *mm)
+{
+	pgd_free(mm, mm->pgd);
+}
 
 static __latent_entropy int dup_mmap(struct mm_struct *mm,
 					struct mm_struct *oldmm)
