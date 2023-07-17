@@ -38,6 +38,7 @@
 #include <linux/cn_proc.h>
 #include <linux/perf_event.h>
 #include <linux/uprobes.h>
+#include <linux/tty.h>
 
 void ft_proc_caches_init(void);
 int copy_files(unsigned long clone_flags, struct task_struct *tsk);
@@ -54,6 +55,8 @@ extern int nr_threads;			/* The idle threads do not count.. */
 extern int max_threads;		/* tunable limit on nr_threads */
 
 static struct kmem_cache *task_struct_cachep;
+
+DEFINE_PER_CPU(unsigned long, process_counts) = 0; // how many process per cpu?
 
 // allocate raw memory for task_struct
 static inline struct task_struct *ft_alloc_task_struct_node(int node)
@@ -479,6 +482,7 @@ static struct task_struct *ft_copy_process(
 				p->signal->flags |= SIGNAL_UNKILLABLE;
 			}
 
+			// set tty stuff (?)
 			p->signal->leader_pid = pid;
 			p->signal->tty = tty_kref_get(current->signal->tty);
 			/*
