@@ -14,6 +14,26 @@
 #include <linux/user-return-notifier.h>
 #include <linux/gfp.h>
 #include <linux/memcontrol.h>
+#include <linux/ftrace.h>
+#include <linux/spinlock.h>
+#include <linux/rbtree.h>
+#include <linux/cred.h>
+#include <linux/delayacct.h>
+#include <linux/list.h>
+#include <linux/spinlock.h>
+#include <linux/signal.h>
+#include <linux/sched/cputime.h>
+#include <linux/cgroup.h>
+#include <linux/task_io_accounting_ops.h>
+#include <linux/timekeeping.h>
+#include <linux/perf_event.h>
+#include <linux/audit.h>
+
+// use kernel/fork.c variables
+extern unsigned long total_forks;	/* Handle normal Linux uptimes. */
+extern int nr_threads;			/* The idle threads do not count.. */
+
+extern int max_threads;		/* tunable limit on nr_threads */
 
 static struct kmem_cache *task_struct_cachep;
 
@@ -27,7 +47,7 @@ static inline void ft_free_task_struct(struct task_struct *tsk)
 {
 	kmem_cache_free(task_struct_cachep, tsk);
 }
-
+ 
 // no idea - allocate new stack for kernel thread
 static unsigned long *alloc_thread_stack_node(struct task_struct *tsk, int node)
 {
@@ -145,7 +165,7 @@ static struct task_struct *ft_copy_process(
 					unsigned long tls,
 					int node)
 {
-	struct task_struct *tsk;
+	struct task_struct *p;
 
 	// check for flag compatibility
 	printk("[DEBUG] checking flag compatibility...\n");
@@ -162,10 +182,119 @@ static struct task_struct *ft_copy_process(
 
 	// dup_task_struct
 	printk("[DEBUG] dup_task_struct...\n");
-	tsk = ft_dup_task_struct(current, node);
-	if (!tsk)
+	p = ft_dup_task_struct(current, node);
+	if (!p)
 	{
 		printk("[ERROR] dup_task_struct fail...\n");
+		return 0;
+	}
+
+	// set up function tracing graph
+	ftrace_graph_init_task(p);
+
+	// initialize real-time mutexes
+	raw_spin_lock_init(&p->pi_lock);
+	p->pi_waiters = RB_ROOT_CACHED;
+	p->pi_top_task = NULL;
+	p->pi_blocked_on = NULL;
+
+	// check if task had reached processor limit for user
+	if (atomic_read(&p->real_cred->user->processes) >=
+				task_rlimit(p, 1024)) {
+		if (p->real_cred->user != INIT_USER &&
+			!capable(CAP_SYS_RESOURCE) && !capable(CAP_SYS_ADMIN))
+		{
+			printk("[ERROR] Max processes reached and user is not root.");
+			return 0;
+		}
+		}
+	
+	// update parent flags about number of forks
+	current->flags &= ~PF_NPROC_EXCEEDED;
+
+	// copy user and group credentials
+	if (copy_creds(p, clone_flags) < 0)
+	{
+		printk("[ERROR] copy_creds failed.");
+		return 0;
+	}
+
+	// check threads
+	if (nr_threads >= max_threads)
+	{
+		printk("[ERROR] nr_threads >= max_threads.");
+		return 0;
+	}
+
+	// initialize delay accounting
+	delayacct_tsk_init(p);	/* Must remain after dup_task_struct() */
+
+	// set some flags and initialize children and sibling lists
+	p->flags &= ~(PF_SUPERPRIV | PF_WQ_WORKER | PF_IDLE);
+	p->flags |= PF_FORKNOEXEC;
+	INIT_LIST_HEAD(&p->children);
+	INIT_LIST_HEAD(&p->sibling);
+
+	// set vfork_done property
+	// set time values to 0
+	// init allocation lock
+	// init pending signals list
+	p->vfork_done = NULL;
+	p->utime = p->stime = p->gtime = 0;
+	spin_lock_init(&p->alloc_lock);
+	init_sigpending(&p->pending);
+
+	// init cputime (?)
+	prev_cputime_init(&p->prev_cputime);
+
+	// default_timer_slack_ns -> rounding of timeout values in syscalls
+	// select() poll() nanosleep()
+	p->default_timer_slack_ns = current->timer_slack_ns;
+
+	// io accounting
+	task_io_accounting_init(&p->ioac);
+	acct_clear_integrals(p);
+
+	// cpu timers init
+	tsk->cputime_expires.prof_exp = 0;
+	tsk->cputime_expires.virt_exp = 0;
+	tsk->cputime_expires.sched_exp = 0;
+	INIT_LIST_HEAD(&tsk->cpu_timers[0]);
+	INIT_LIST_HEAD(&tsk->cpu_timers[1]);
+	INIT_LIST_HEAD(&tsk->cpu_timers[2]);
+
+	// set cpu times
+	p->start_time = ktime_get_ns();
+	p->real_start_time = ktime_get_boot_ns();
+
+	// set vm states
+	p->io_context = NULL;
+	p->audit_context = NULL;
+
+	// cgroup
+	cgroup_fork(p);
+
+	// enable pagefaults
+	p->pagefault_disabled = 0;
+
+	// scheduler setup, cpu assignation
+	if (sched_fork(clone_flags, p))
+	{
+		printk("[ERROR] sched_fork failed.");
+		return 0;
+	}
+
+	// performance event
+	if (perf_event_init_task(p))
+	{
+		printk("[ERROR] perf_event_init_task failed.");
+		return 0;
+	}
+
+	// alloc autidting
+	if (audit_alloc(p))
+	{
+		printk("[ERROR] audit_alloc failed.");
 		return 0;
 	}
 
@@ -228,7 +357,7 @@ long ft_do_fork(
 
 	if (!child)
 	{
-		printk("[DEBUG] copy_process failed \n");
+		printk("[ERROR] copy_process failed \n");
 		return -1;
 	}
 
