@@ -552,6 +552,11 @@ int copy_signal(unsigned long clone_flags, struct task_struct *tsk)
 	seqlock_init(&sig->stats_lock);
 	prev_cputime_init(&sig->prev_cputime);
 
+	// init hr timer
+	INIT_LIST_HEAD(&sig->posix_timers);
+	hrtimer_init(&sig->real_timer, CLOCK_MONOTONIC, HRTIMER_MODE_REL);
+	sig->real_timer.function = it_real_fn;
+
 	task_lock(current->group_leader);
 	memcpy(sig->rlim, current->signal->rlim, sizeof sig->rlim);
 	task_unlock(current->group_leader);
