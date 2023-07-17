@@ -306,6 +306,13 @@ static struct task_struct *ft_copy_process(
 	// cgroup
 	cgroup_fork(p);
 
+	// create memory policy
+	p->mempolicy = mpol_dup(p->mempolicy);
+	if (IS_ERR(p->mempolicy)) {
+		printk("[ERROR] mpol_dup failed.");
+		return 0;
+	}
+
 	// enable pagefaults
 	p->pagefault_disabled = 0;
 
