@@ -311,10 +311,10 @@ void ft_proc_caches_init(void)
 	// 		sizeof(struct sighand_struct), 0,
 	// 		SLAB_HWCACHE_ALIGN|SLAB_PANIC|SLAB_TYPESAFE_BY_RCU|
 	// 		SLAB_ACCOUNT, sighand_ctor);
-	// signal_cachep = kmem_cache_create("signal_cache",
-	// 		sizeof(struct signal_struct), 0,
-	// 		SLAB_HWCACHE_ALIGN|SLAB_PANIC|SLAB_ACCOUNT,
-	// 		NULL);
+	signal_cachep = kmem_cache_create("signal_cache",
+			sizeof(struct signal_struct), 0,
+			SLAB_HWCACHE_ALIGN|SLAB_PANIC|SLAB_ACCOUNT,
+			NULL);
 	// files_cachep = kmem_cache_create("files_cache",
 	// 		sizeof(struct files_struct), 0,
 	// 		SLAB_HWCACHE_ALIGN|SLAB_PANIC|SLAB_ACCOUNT,
