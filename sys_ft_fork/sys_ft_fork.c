@@ -394,7 +394,7 @@ static struct task_struct *ft_copy_process(
 
 	// set pid to the one we created, or in the args
 	p->pid = pid_nr(pid);
-	printk("child pid %d\n". p->pid);
+	printk("child pid %d\n", p->pid);
 
 	return 0;
 }
