@@ -34,10 +34,9 @@
 
 
 #include <asm-generic/mm_hooks.h>
-#include <asm-generic/tlbflush.h>
 #include <asm-generic/mmu_context.h>
-
-
+#include <asm/pgalloc.h>
+#include <asm/pgtable.h>
 
 #define allocate_mm()	(kmem_cache_alloc(mm_cachep, GFP_KERNEL))
 #define free_mm(mm)	(kmem_cache_free(mm_cachep, (mm)))
