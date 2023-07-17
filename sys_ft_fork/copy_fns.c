@@ -8,9 +8,122 @@
 #include <linux/iocontext.h>
 #include <linux/mm_types.h>
 #include <linux/sched/mm.h>
+#include <linux/sched/cputime.h>
+#include <linux/sched/autogroup.h>
 #include <linux/sched/signal.h>
 #include <linux/list.h>
+#include <linux/ioprio.h>
+#include <linux/vmacache.h>
+#include <linux/tty.h>
 
+/* SLAB cache for signal_struct structures (tsk->signal) */
+static struct kmem_cache *signal_cachep;
+
+/* SLAB cache for sighand_struct structures (tsk->sighand) */
+struct kmem_cache *sighand_cachep;
+
+/* SLAB cache for files_struct structures (tsk->files) */
+struct kmem_cache *files_cachep;
+
+/* SLAB cache for fs_struct structures (tsk->fs) */
+struct kmem_cache *fs_cachep;
+
+/* SLAB cache for vm_area_struct structures */
+struct kmem_cache *vm_area_cachep;
+
+/* SLAB cache for mm_struct structures (tsk->mm) */
+static struct kmem_cache *mm_cachep;
+
+// init cache objects
+void ft_proc_caches_init(void)
+{
+	sighand_cachep = kmem_cache_create("sighand_cache",
+			sizeof(struct sighand_struct), 0,
+			SLAB_HWCACHE_ALIGN|SLAB_PANIC|SLAB_TYPESAFE_BY_RCU|
+			SLAB_ACCOUNT, sighand_ctor);
+	signal_cachep = kmem_cache_create("signal_cache",
+			sizeof(struct signal_struct), 0,
+			SLAB_HWCACHE_ALIGN|SLAB_PANIC|SLAB_ACCOUNT,
+			NULL);
+	files_cachep = kmem_cache_create("files_cache",
+			sizeof(struct files_struct), 0,
+			SLAB_HWCACHE_ALIGN|SLAB_PANIC|SLAB_ACCOUNT,
+			NULL);
+	fs_cachep = kmem_cache_create("fs_cache",
+			sizeof(struct fs_struct), 0,
+			SLAB_HWCACHE_ALIGN|SLAB_PANIC|SLAB_ACCOUNT,
+			NULL);
+	/*
+	 * FIXME! The "sizeof(struct mm_struct)" currently includes the
+	 * whole struct cpumask for the OFFSTACK case. We could change
+	 * this to *only* allocate as much of it as required by the
+	 * maximum number of CPU's we can ever have.  The cpumask_allocation
+	 * is at the end of the structure, exactly for that reason.
+	 */
+	mm_cachep = kmem_cache_create_usercopy("mm_struct",
+			sizeof(struct mm_struct), ARCH_MIN_MMSTRUCT_ALIGN,
+			SLAB_HWCACHE_ALIGN|SLAB_PANIC|SLAB_ACCOUNT,
+			offsetof(struct mm_struct, saved_auxv),
+			sizeof_field(struct mm_struct, saved_auxv),
+			NULL);
+	vm_area_cachep = KMEM_CACHE(vm_area_struct, SLAB_PANIC|SLAB_ACCOUNT);
+	mmap_init();
+	nsproxy_cache_init();
+}
+
+/*
+ * Initialize POSIX timer handling for a thread group.
+ */
+static void posix_cpu_timers_init_group(struct signal_struct *sig)
+{
+	unsigned long cpu_limit;
+
+	cpu_limit = READ_ONCE(sig->rlim[RLIMIT_CPU].rlim_cur);
+	if (cpu_limit != RLIM_INFINITY) {
+		sig->cputime_expires.prof_exp = cpu_limit * NSEC_PER_SEC;
+		sig->cputimer.running = true;
+	}
+
+	/* The timer lists. */
+	INIT_LIST_HEAD(&sig->cpu_timers[0]);
+	INIT_LIST_HEAD(&sig->cpu_timers[1]);
+	INIT_LIST_HEAD(&sig->cpu_timers[2]);
+}
+
+static struct mm_struct *dup_mm(struct task_struct *tsk)
+{
+	struct mm_struct *mm, *oldmm = current->mm;
+	int err;
+
+	mm = allocate_mm();
+	if (!mm)
+		goto fail_nomem;
+
+	memcpy(mm, oldmm, sizeof(*mm));
+
+	if (!mm_init(mm, tsk, mm->user_ns))
+		goto fail_nomem;
+
+	err = dup_mmap(mm, oldmm);
+	if (err)
+		goto free_pt;
+
+	mm->hiwater_rss = get_mm_rss(mm);
+	mm->hiwater_vm = mm->total_vm;
+
+	if (mm->binfmt && !try_module_get(mm->binfmt->module))
+		goto free_pt;
+
+	return mm;
+
+free_pt:
+	/* don't put binfmt in mmput, we haven't got module yet */
+	mm->binfmt = NULL;
+	mmput(mm);
+
+fail_nomem:
+	return NULL;
+}
 
 int copy_files(unsigned long clone_flags, struct task_struct *tsk)
 {

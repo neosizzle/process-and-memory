@@ -35,7 +35,7 @@
 #include <linux/ptrace.h>
 #include <linux/latencytop.h>
 
-
+void ft_proc_caches_init(void);
 int copy_files(unsigned long clone_flags, struct task_struct *tsk);
 int copy_fs(unsigned long clone_flags, struct task_struct *tsk);
 int copy_sighand(unsigned long clone_flags, struct task_struct *tsk);
@@ -313,6 +313,9 @@ static struct task_struct *ft_copy_process(
 
 	// initialize shared memory managment
 	shm_init_task(p);
+
+	// init copy chackes first
+	ft_proc_caches_init();
 
 	// copy process information
 	if (copy_semundo(clone_flags, p))
