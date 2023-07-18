@@ -64,7 +64,7 @@ int	main(int ac, char **av, char **env)
 		exit_handler(1);
 	if (pipe(p_fd) == -1)
 		exit(-1);
-	pid = fork();
+	pid = ft_fork();
 	if (pid == -1)
 		exit(-1);
 	if (!pid)
