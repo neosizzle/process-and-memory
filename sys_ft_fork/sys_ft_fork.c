@@ -40,6 +40,8 @@
 #include <linux/uprobes.h>
 #include <linux/tty.h>
 #include <linux/mempolicy.h>
+#include <linux/percpu-defs.h>
+#include <linux/vmalloc.h>
 
 void ft_proc_caches_init(void);
 int copy_files(unsigned long clone_flags, struct task_struct *tsk);
@@ -59,6 +61,9 @@ static struct kmem_cache *task_struct_cachep;
 
 DEFINE_PER_CPU(unsigned long, ft_process_counts) = 0; // how many process per cpu?
 
+#define NR_CACHED_STACKS 2
+static DEFINE_PER_CPU(struct vm_struct *, cached_stacks[NR_CACHED_STACKS]);
+
 // allocate raw memory for task_struct
 static inline struct task_struct *ft_alloc_task_struct_node(int node)
 {
@@ -73,10 +78,42 @@ static inline void ft_free_task_struct(struct task_struct *tsk)
 // no idea - allocate new stack for kernel thread
 static unsigned long *alloc_thread_stack_node(struct task_struct *tsk, int node)
 {
-	struct page *page = alloc_pages_node(node, THREADINFO_GFP,
-					     THREAD_SIZE_ORDER);
+	void *stack;
+	int i;
 
-	return page ? page_address(page) : NULL;
+	for (i = 0; i < NR_CACHED_STACKS; i++) {
+		struct vm_struct *s;
+
+		s = this_cpu_xchg(cached_stacks[i], NULL);
+
+		if (!s)
+			continue;
+
+		/* Clear stale pointers from reused stack. */
+		memset(s->addr, 0, THREAD_SIZE);
+
+		tsk->stack_vm_area = s;
+		return s->addr;
+	}
+
+	stack = __vmalloc_node_range(THREAD_SIZE, THREAD_ALIGN,
+				     VMALLOC_START, VMALLOC_END,
+				     THREADINFO_GFP,
+				     PAGE_KERNEL,
+				     0, node, __builtin_return_address(0));
+
+	/*
+	 * We can't call find_vm_area() in interrupt context, and
+	 * free_thread_stack() can be called in interrupt context,
+	 * so cache the vm_struct.
+	 */
+	if (stack)
+		tsk->stack_vm_area = find_vm_area(stack);
+	return stack;
+	// struct page *page = alloc_pages_node(node, THREADINFO_GFP,
+	// 				     THREAD_SIZE_ORDER);
+
+	// return page ? page_address(page) : NULL;
 }
 
 // change page state counters 
@@ -147,7 +184,7 @@ static struct task_struct * ft_dup_task_struct(struct task_struct *orig, int nod
 	
 	// reassign stacks
 	tsk->stack = stack;
-	// tsk->stack_vm_area = stack_vm_area; // CONFIG_VMAP_STACK
+	tsk->stack_vm_area = stack_vm_area; // CONFIG_VMAP_STACK
 
 	// configures stack
 	setup_thread_stack(tsk, orig);
