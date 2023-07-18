@@ -15,14 +15,9 @@ NAME_2 = wait_test
 SRCS_2 = wait_test.c
 OBJS_2 = ${SRCS_2:.c=.o}
 
-NAME_3 = fork_test
-SRCS_3 = fork_test.c
-OBJS_3 = ${SRCS_3:.c=.o}
-
 OBJS_TARGET_0=${addprefix ${BUILDDIR},${subst /,_,${OBJS_0}}}
 OBJS_TARGET_1=${addprefix ${BUILDDIR},${subst /,_,${OBJS_1}}}
 OBJS_TARGET_2=${addprefix ${BUILDDIR},${subst /,_,${OBJS_2}}}
-OBJS_TARGET_3=${addprefix ${BUILDDIR},${subst /,_,${OBJS_3}}}
 
 # Style constants
 RED=\033[0;31m
@@ -34,7 +29,7 @@ CYAN=\033[0;36m
 NC=\033[0m # No Color
 
 
-all : ${NAME_1} ${NAME_0} ${NAME_2} ${NAME_3}
+all : ${NAME_1} ${NAME_0} ${NAME_2}
 	@echo "${GREEN}✔️  Done build..${NC}"
 
 # Linking
@@ -50,12 +45,8 @@ ${NAME_2}: ${OBJS_TARGET_2}
 	@echo "${GREEN}😏  Linking ${foreach obj,${OBJS_2},${BUILDDIR}${obj}}.. ${NC}"
 	@${CC} ${foreach obj,${OBJS_2},${BUILDDIR}${obj}} ${C_FLAGS} -o ${NAME_2}
 
-${NAME_3}: ${OBJS_TARGET_3}
-	@echo "${GREEN}😏  Linking ${foreach obj,${OBJS_3},${BUILDDIR}${obj}}.. ${NC}"
-	@${CC} ${foreach obj,${OBJS_3},${BUILDDIR}${obj}} ${C_FLAGS} -o ${NAME_3}
-
 # Compiling
-build/%.o : ${OBJS_0} ${OBJS_1} ${OBJS_2} ${OBJS_3}
+build/%.o : ${OBJS_0} ${OBJS_1} ${OBJS_2}
 	@echo "${GREEN}📇  Compile finish..${NC}"
 
 
@@ -74,8 +65,6 @@ fclean : clean
 	@rm -rf ${NAME_1}
 	@echo "${YELLOW}🗑️  Removing ${NAME_2}..${NC}"
 	@rm -rf ${NAME_2}
-	@echo "${YELLOW}🗑️  Removing ${NAME_3}..${NC}"
-	@rm -rf ${NAME_3}
 
 re : fclean all
 
