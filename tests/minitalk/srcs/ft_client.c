@@ -23,7 +23,7 @@ static void	send_bits(int pid, char c)
 			ft_kill(pid, SIGUSR2);
 		}
 		offset++;
-		usleep(10000);
+		usleep(15000);
 	}
 }
 
