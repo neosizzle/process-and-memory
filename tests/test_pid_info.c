@@ -53,6 +53,12 @@ void read_from_syscall(long pid, int iterate_parent_and_children)
 	pidinfo->pwd = ft_calloc(1024, 1);
 	pidinfo->children = ft_calloc(1024, sizeof(long));
 
+	if (pid == 0)
+	{
+		printf("You have reached the kernel!!!\n");
+		return ;
+	}
+
 	long syscall_ret = get_pid_info(pidinfo, pid);
 	if (syscall_ret < 0)
 		printf("syscall error diu %s\n", strerror(errno));
@@ -107,6 +113,14 @@ void read_from_syscall(long pid, int iterate_parent_and_children)
 
 void read_from_vfs(long pid, int iterate_parent_and_children)
 {
+
+	// check pid 0
+	if (pid == 0)
+	{
+		printf("You have reached the kernel!!\n");
+		return ;
+	}
+
 	// read from /proc/pid stat
 	char *path = (char *)malloc(69420);
 	sprintf(path, "/proc/%ld/stat", pid);

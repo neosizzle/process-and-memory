@@ -112,7 +112,6 @@ static struct pid_info create_pid_info(int pid)
 	int i;
 	long *children;
 
-	printk("[DEBUG] createpidinfo 0\n");
 	// res = kmalloc(sizeof(struct pid_info), GFP_USER);
 	if (!task || !task->pid)
 	{
@@ -132,11 +131,9 @@ static struct pid_info create_pid_info(int pid)
 	res.root = task->fs->root.dentry->d_name.name;
 	res.pwd = walk_to_root(task->fs->pwd.dentry);
 
-	printk("[DEBUG] createpidinfo 1 \n");
 	// age
 	res.age = get_uptime() - ((task->real_start_time / 10000000) / (HZ / 10));
 	
-	printk("[DEBUG] createpidinfo 2 \n");
 	// children
 	children_length = 0;
 	i = 0;
@@ -153,17 +150,12 @@ static struct pid_info create_pid_info(int pid)
 	children[i] = 0;
 	res.children = children;
 
-	printk("[DEBUG] createpidinfo 3 \n");
 	return res;
 }
 
 SYSCALL_DEFINE2(get_pid_info, struct pid_info __user *, info, int, pid)
 {
 	struct pid_info res = create_pid_info(pid);
-	printk("[DEBUG] createpidinfo 4 \n");
-	// if (copy_to_user(info, res, sizeof(struct pid_info)) != 0) {
-	// 	return -1;
-	// }
 
 	// TODO copy everything
 	if (copy_to_user(&(info->pid), &(res.pid), sizeof(long)) != 0)
