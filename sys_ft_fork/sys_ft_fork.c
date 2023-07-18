@@ -221,6 +221,10 @@ static struct task_struct *ft_copy_process(
 	// set up function tracing graph
 	ftrace_graph_init_task(p);
 
+	// set child tid
+	p->set_child_tid = (clone_flags & CLONE_CHILD_SETTID) ? child_tidptr : NULL;
+	p->clear_child_tid = (clone_flags & CLONE_CHILD_CLEARTID) ? child_tidptr : NULL;
+
 	// initialize real-time mutexes
 	raw_spin_lock_init(&p->pi_lock);
 	p->pi_waiters = RB_ROOT_CACHED;
@@ -263,6 +267,8 @@ static struct task_struct *ft_copy_process(
 	p->flags |= PF_FORKNOEXEC;
 	INIT_LIST_HEAD(&p->children);
 	INIT_LIST_HEAD(&p->sibling);
+
+	// no rcu
 
 	// set vfork_done property
 	// set time values to 0
@@ -315,7 +321,7 @@ static struct task_struct *ft_copy_process(
 	}
 
 	// enable pagefaults
-	p->pagefault_disabled = 0;
+	// p->pagefault_disabled = 0;
 
 	// scheduler setup, cpu assignation
 	if (sched_fork(clone_flags, p))
@@ -341,7 +347,7 @@ static struct task_struct *ft_copy_process(
 	// initialize shared memory managment
 	shm_init_task(p);
 
-	// init copy chackes first
+	// init copy chaches first
 	ft_proc_caches_init();
 
 	// copy process information
