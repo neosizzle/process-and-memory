@@ -88,6 +88,9 @@ void read_from_syscall(long pid, int iterate_parent_and_children)
 		pidinfo->pwd
 	);
 
+	long addr = ft_atoi(pidinfo->process_stack);
+	printf("addr: %ld %x\n", addr, addr);
+
 	// print children
 	printf("children,\n");
 	int child_i = -1;
