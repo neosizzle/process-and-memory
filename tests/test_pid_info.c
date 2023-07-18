@@ -89,7 +89,7 @@ void read_from_syscall(long pid, int iterate_parent_and_children)
 	);
 
 	printf("IM GONNA DEREFRENCE: %ld\n", pidinfo->process_stack);
-	printf("%c\n", (char)*((void *)pidinfo->process_stack);)
+	printf("%c\n", (char)*((void *)pidinfo->process_stack));
 
 	// print children
 	printf("children,\n");
