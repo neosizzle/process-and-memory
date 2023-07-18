@@ -693,7 +693,7 @@ long ft_do_fork(
 			ptrace_event_pid(PTRACE_EVENT_VFORK_DONE, child_pid_struct);
 	}
 
-	printk("[DEBUG] returning child pid... \n");
+	printk("[DEBUG] returning child pid %d... \n", child_pid);
 	return child_pid;
 }
 
