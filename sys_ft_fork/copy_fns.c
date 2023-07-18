@@ -311,10 +311,13 @@ void ft_proc_caches_init(void)
 	// 		sizeof(struct sighand_struct), 0,
 	// 		SLAB_HWCACHE_ALIGN|SLAB_PANIC|SLAB_TYPESAFE_BY_RCU|
 	// 		SLAB_ACCOUNT, sighand_ctor);
-	signal_cachep = kmem_cache_create("signal_cache",
+	if (!signal_cachep)
+	{
+		signal_cachep = kmem_cache_create("signal_cache",
 			sizeof(struct signal_struct), 0,
 			SLAB_HWCACHE_ALIGN|SLAB_PANIC|SLAB_ACCOUNT,
 			NULL);
+	}
 	// files_cachep = kmem_cache_create("files_cache",
 	// 		sizeof(struct files_struct), 0,
 	// 		SLAB_HWCACHE_ALIGN|SLAB_PANIC|SLAB_ACCOUNT,
@@ -330,12 +333,15 @@ void ft_proc_caches_init(void)
 	 * maximum number of CPU's we can ever have.  The cpumask_allocation
 	 * is at the end of the structure, exactly for that reason.
 	 */
-	mm_cachep = kmem_cache_create_usercopy("mm_struct",
-			sizeof(struct mm_struct), ARCH_MIN_MMSTRUCT_ALIGN,
-			SLAB_HWCACHE_ALIGN|SLAB_PANIC|SLAB_ACCOUNT,
-			offsetof(struct mm_struct, saved_auxv),
-			sizeof_field(struct mm_struct, saved_auxv),
-			NULL);
+	if (!mm_cachep)
+	{
+		mm_cachep = kmem_cache_create_usercopy("mm_struct",
+				sizeof(struct mm_struct), ARCH_MIN_MMSTRUCT_ALIGN,
+				SLAB_HWCACHE_ALIGN|SLAB_PANIC|SLAB_ACCOUNT,
+				offsetof(struct mm_struct, saved_auxv),
+				sizeof_field(struct mm_struct, saved_auxv),
+				NULL);
+	}
 }
 
 /*
