@@ -255,10 +255,5 @@ int main(int argc)
 	printf("\n=======================\n");
 	read_from_syscall(pid, iterate_parent_and_children);
 
-	// printf("System call test0 returned %ld\n", amma);
-	// if (amma == -1)
-	// {
-	// printf("errmsg %s \n", strerror(errno));
-	// }
 	return 0;
 }

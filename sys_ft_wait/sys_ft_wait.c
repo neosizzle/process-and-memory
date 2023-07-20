@@ -13,24 +13,6 @@ int condition_check(void)
 
 SYSCALL_DEFINE1(ft_wait, int __user *, status)
 {
-	// testing stuff
-	// current->state = TASK_INTERRUPTIBLE;
-
-	// DECLARE_WAIT_QUEUE_HEAD(my_wait_queue);
-
-
-	// wait_event_interruptible(my_wait_queue, condition_check());
-	// printk("wait_event return\n");
-	
-	// struct wait_queue_entry wait;
-	// init_waitqueue_entry(&wait, current);
-	// current->state = TASK_INTERRUPTIBLE;
-	// add_wait_queue(&my_wait_queue,&wait); /* wq points to the wait queue head */
-	// schedule();
-	// wake_up(&my_wait_queue);
-	// remove_wait_queue(&my_wait_queue, &wait);
-
-
 
 	struct task_struct *child_task;
 	int child_state = 0;
@@ -43,7 +25,6 @@ SYSCALL_DEFINE1(ft_wait, int __user *, status)
 	{
 		// iterate children to check if any of them return (change state to exit zombie)
 		list_for_each_entry(child_task, &current->children, sibling) {
-			printk("child status %d, exit_state %d, exit_code %d, exit_signal %d\n",
 			child_task->state,
 			child_task->exit_state,
 			child_task->exit_code,
