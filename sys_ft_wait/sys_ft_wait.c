@@ -25,11 +25,6 @@ SYSCALL_DEFINE1(ft_wait, int __user *, status)
 	{
 		// iterate children to check if any of them return (change state to exit zombie)
 		list_for_each_entry(child_task, &current->children, sibling) {
-			child_task->state,
-			child_task->exit_state,
-			child_task->exit_code,
-			child_task->exit_signal
-			);
 
 			// if one of them dies, change child state to exit dead and return status code
 			if (child_task->state > 0)
