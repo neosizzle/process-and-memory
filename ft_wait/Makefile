@@ -1,1 +1,0 @@
-obj-y:=ft_wait.o

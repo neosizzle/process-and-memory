@@ -1,1 +1,0 @@
-obj-y:=sys_get_pid_info.o
