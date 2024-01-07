@@ -28,7 +28,7 @@ The signal transmission process is split into two phases
 Unix operating systems rely heavily on process creation to satisfy user requests. The `fork()` syscall initializes and sets some values and then calls `clone()` syscall underlying to clone the actual process. The detailed steps will be discussed later. 
 
 ### Syscalls
-System calls are kernel-defined, which means every different system may have different implementations of system calls. To expose syscalls to the user as an interface, the kernel compiles with a certain table which denotes the number of the syscall, the function to call and its argument and types.
+System calls are kernel-defined, which means every different system may have different implementations of system calls. To expose syscalls to the user as an interface, the kernel compiles with a certain table which denotes the number of the syscall, the function to call and its argument and types. The .tbl file is THE file kernel reads to reoute syscalls. the SYSCALL_DEFINEN macro is used to register logic implementation to certain syscall numbers.
 
 ## Implementation
 ### ft_kill
